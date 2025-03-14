@@ -212,21 +212,25 @@ function updateTreemap(data) {
   const chartTitle = isPerPerson
     ? "Expenses <b>per Person</b>"
     : "Total Expenses";
-  const hoverTemplate = isPerPerson
-    ? "<b>%{label}</b><br>Total per Person: $%{value:,.2f}<br>% of Total: %{customdata:.2f}%<extra></extra>"
-    : "<b>%{label}</b><br>Total: $%{value:,.2f}<br>% of Total: %{customdata:.2f}%<extra></extra>";
+    const hoverTemplates = labels.map((label, i) => {
+        if (!adjustedValues[i]) return ""; // no hover text for the root node
+        return isPerPerson // conditional hover text based on toggle
+          ? "<b>%{label}</b><br>Total per Person: $%{value:,.2f}<br>% of Total: %{customdata:.2f}%<extra></extra>"
+          : "<b>%{label}</b><br>Total: $%{value:,.2f}<br>% of Total: %{customdata:.2f}%<extra></extra>";
+      });
 
   // create trace
   const trace = {
     type: "treemap",
     labels: labels,
-    parents: labels.map(() => ""), // no parent hierarchy
+    parents: labels.map(() => ""), // no parent hierarchy (root node)
     values: adjustedValues,
     customdata: percentages, // percentages for hover template
     textinfo: "label+value+percent entry",
     texttemplate: "<b>%{label}</b><br>$%{value:,.2f}<br>%{customdata:.2f}%",
-    hovertemplate: hoverTemplate,
+    hovertemplate: hoverTemplates,
     textposition: "top right",
+    root: { visible: false },
   };
 
   const layout = {
