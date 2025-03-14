@@ -8,11 +8,11 @@
 //   Gas: "red",
 // };
 const colorPalette = {
-    Electric: "red",
-    Cleaning: "green",
-    Internet: "orange",
-    Gas: "blue",
-  };
+  Electric: "red",
+  Cleaning: "green",
+  Internet: "orange",
+  Gas: "blue",
+};
 
 // timeseries chart of expenses per month
 function updateLineChart(data) {
@@ -105,10 +105,10 @@ function updateLineChart(data) {
   // dynamic chart title
   const chartTitle = isCategory
     ? isPerPerson
-      ? "Utilities per Month <b>per Person</b> by Category"
-      : "Utilities per Month by Category"
+      ? "Utilities per Month<br><b>per Person</b> by Category"
+      : "Utilities per Month<br>by Category"
     : isPerPerson
-    ? "Utilities per Month <b>per Person</b>"
+    ? "Utilities per Month<br><b>per Person</b>"
     : "Utilities per Month";
 
   // set y-axis range, excluding Total
@@ -125,6 +125,12 @@ function updateLineChart(data) {
     yaxis: {
       title: "Amount ($)",
       range: [0, yMax * 1.1],
+    },
+    legend: {
+      orientation: "h",
+      x: 0.5,
+      xanchor: "center",
+      y: -0.2,
     },
   };
 
@@ -151,7 +157,7 @@ function updateTreemap(data) {
 
   // toggle title and hover template
   const chartTitle = isPerPerson
-    ? "Expenses <b>per Person</b>"
+    ? "Expenses<br><b>per Person</b>"
     : "Total Expenses";
   const hoverTemplates = labels.map((label, i) => {
     if (!adjustedValues[i]) return ""; // no hover text for the root node
@@ -197,7 +203,7 @@ function updateStackedBar(data) {
   // check toggle
   const isPerPerson = document.getElementById("toggle-per-person").checked;
   const chartTitle = isPerPerson
-    ? "Expenses per Month <b>per Person</b>"
+    ? "Expenses per Month<br><b>per Person</b>"
     : "Total Expenses per Month";
 
   // create traces for each category
@@ -246,6 +252,12 @@ function updateStackedBar(data) {
     barmode: "stack",
     xaxis: { title: "Date" },
     yaxis: { title: "Amount ($)" },
+    legend: {
+      orientation: "h",
+      x: 0.5,
+      xanchor: "center",
+      y: -0.2,
+    },
   };
 
   // plot chart
