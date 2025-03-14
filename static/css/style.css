@@ -1,3 +1,5 @@
+/* General styling */
+
 /* Bootstrap navbar */
 .custom-navbar {
     background-color: rgba(255, 255, 255, 0.8);
@@ -98,6 +100,36 @@
     color: #e9c46a;
     /* color: #005f73; */
     transition: color 0.3s ease;
+}
+
+/* button stuff */
+.button {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+  
+.button a {
+    background-color: #0085A1;
+    color: #ffffff !important;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+    border: 1px solid #343a40;
+    transition: background-color 0.3s ease;
+    display: inline-block; /* ensure button is inline-block */
+    white-space: nowrap; /* prevent text wrapping */
+}
+  
+.button a:hover {
+    background-color: #005f73; 
+    border: 1px solid #343a40; 
+    color: #e9c46a !important; 
+    padding: 10px 20px;
+    border-radius: 5px;
 }
 
 /* toggle container styling */
