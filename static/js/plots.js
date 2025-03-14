@@ -1,5 +1,19 @@
 // Description: plots, supporting app.js
 
+// consistent color palette for categories
+// const colorPalette = {
+//   Electric: "blue",
+//   Cleaning: "orange",
+//   Internet: "green",
+//   Gas: "red",
+// };
+const colorPalette = {
+    Electric: "red",
+    Cleaning: "green",
+    Internet: "orange",
+    Gas: "blue",
+  };
+
 // timeseries chart of expenses per month
 function updateLineChart(data) {
   const groupedData = d3.group(
@@ -33,6 +47,7 @@ function updateLineChart(data) {
         type: "scatter",
         mode: "lines",
         hovertemplate: `$%{y:.2f}<br>`,
+        line: { color: colorPalette[category] },
       };
     });
 
@@ -157,6 +172,9 @@ function updateTreemap(data) {
     hovertemplate: hoverTemplates,
     textposition: "top right",
     root: { visible: false },
+    marker: {
+      colors: labels.map((label) => colorPalette[label]),
+    },
   };
 
   const layout = {
@@ -196,6 +214,7 @@ function updateStackedBar(data) {
       name: category,
       type: "bar",
       hovertemplate: "$%{y:.2f}",
+      marker: { color: colorPalette[category] },
     };
   });
 
