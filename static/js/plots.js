@@ -329,24 +329,24 @@ function createTable(processedData) {
           "<b>Year</b>",
           "<b>Max per Person</b>",
           "<b>Min per Person</b>",
-          "<b>Average per Person</b>",
+          "<b>Avg per Person</b>",
           "<b>Total per Person</b>",
         ],
         fill: { color: "paleturquoise" },
-        align: "left",
+        align: "right",
         font: { size: 14 },
       },
       cells: {
         values: [years, maxAmounts, minAmounts, avgAmounts, totalAmounts],
         fill: { color: "lavender" },
-        align: "left",
+        align: "right",
         font: { size: 12 },
       },
     },
   ];
 
   const layout = {
-    title: "Max, Min, Average, and Total Amount per Person per Year",
+    title: "Max, Min, Average, and Total Amount<br>per Person per Year",
     margin: { t: 50, l: 25, r: 25, b: 25 },
   };
 
