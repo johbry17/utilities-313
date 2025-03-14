@@ -1,4 +1,7 @@
 // Description: JavaScript code for the utilities dashboard
+// in order: data processing on top
+// chart updates are the bulk of the program
+// event listeners are at the bottom
 
 // global variable to store data
 let processedData = [];
@@ -11,7 +14,6 @@ let processedData = [];
 function processData(data) {
   data.forEach((d) => {
     d.Date = new Date(d.Date); // convert string to date
-    d.AmountPerPerson = d.Amount / 3;
     if (d.Expense === "Pepco" || d.Expense === "CleanChoice")
       d.Expense = "Electric";
   });
@@ -144,11 +146,11 @@ function updateLineChart(data) {
     ? "Utilities per Month <b>per Person</b>"
     : "Utilities per Month";
 
-  // set y-axis range
+  // set y-axis range, excluding Total
   const yMax = Math.max(
     ...traces
-      .filter((trace) => trace.name !== "Total") // Exclude the "Total" trace
-      .flatMap((trace) => trace.y.filter((y) => y !== null)) // Get all y values from visible traces
+      .filter((trace) => trace.name !== "Total")
+      .flatMap((trace) => trace.y.filter((y) => y !== null))
   );
 
   // layout with dynamic title
@@ -301,6 +303,107 @@ function updateStackedBar(data) {
   Plotly.newPlot("stacked-bar-chart", [...traces, totalTrace], layout);
 }
 
+// create static summary of expenses
+function createTable(processedData) {
+  // JavaScript's month is 0 indexed
+  // this is a terribly annoying problem
+  // so to get data starting at Jan 2021, I first must
+  // filter out data before December 2020
+  const filteredData = processedData.filter(
+    (d) => d.Year > 2020 || (d.Year === 2020 && d.Month >= 12)
+  );
+
+  // now that I have filtered the data
+  // I have to increment the month by 1
+  // and then check if it is greater than 12
+  // to wrap around to 1 and increment the year
+  const adjustedFilteredData = filteredData.map((d) => {
+    const newMonth = d.Month + 1; // Increment the month
+    return {
+      ...d,
+      Month: newMonth > 12 ? 1 : newMonth,
+      Year: newMonth > 12 ? d.Year + 1 : d.Year,
+    };
+  });
+
+  // group data by year and month, then sum the Amount
+  const monthlyTotals = d3.rollups(
+    adjustedFilteredData,
+    (v) => d3.sum(v, (d) => d.Amount),
+    (d) => d.Year,
+    (d) => d.Month
+  );
+
+  // flatten grouped data
+  // extract year, then month and total amount for each month
+  // calculate Amount per Person
+  const flattenedData = [];
+  monthlyTotals.forEach(([year, yearData]) => {
+    yearData.forEach(([month, totalAmount]) => {
+      flattenedData.push({
+        Year: year,
+        Month: month,
+        TotalAmount: totalAmount,
+        AmountPerPerson: totalAmount / 3, // divide by 3 for per person
+      });
+    });
+  });
+
+  // group data by year, calculate max, min, and average amount per Person
+  const yearlyStats = d3.rollups(
+    flattenedData,
+    (v) => ({
+      max: d3.max(v, (d) => d.AmountPerPerson),
+      min: d3.min(v, (d) => d.AmountPerPerson),
+      avg: d3.mean(v, (d) => d.AmountPerPerson),
+      total: d3.sum(v, (d) => d.AmountPerPerson),
+    }),
+    (d) => d.Year
+  );
+
+  // Sort by year
+  yearlyStats.sort((a, b) => a[0] - b[0]);
+  console.log(yearlyStats);
+  // columns for table
+  const years = yearlyStats.map((d) => d[0]);
+  const maxAmounts = yearlyStats.map((d) => `$${d[1].max.toFixed(2)}`);
+  const minAmounts = yearlyStats.map((d) => `$${d[1].min.toFixed(2)}`);
+  const avgAmounts = yearlyStats.map((d) => `$${d[1].avg.toFixed(2)}`);
+  const totalAmounts = yearlyStats.map((d) => `$${d[1].total.toFixed(2)}`);
+
+  // Create the Plotly table
+  const tableData = [
+    {
+      type: "table",
+      header: {
+        values: [
+          "<b>Year</b>",
+          "<b>Max per Person</b>",
+          "<b>Min per Person</b>",
+          "<b>Average per Person</b>",
+          "<b>Total per Person</b>",
+        ],
+        fill: { color: "paleturquoise" },
+        align: "left",
+        font: { size: 14 },
+      },
+      cells: {
+        values: [years, maxAmounts, minAmounts, avgAmounts, totalAmounts],
+        fill: { color: "lavender" },
+        align: "left",
+        font: { size: 12 },
+      },
+    },
+  ];
+
+  const layout = {
+    title: "Max, Min, Average, and Total Amount per Person per Year",
+    margin: { t: 50, l: 25, r: 25, b: 25 },
+  };
+
+  Plotly.newPlot("table", tableData, layout);
+}
+
 // inital load data and update charts
 d3.csv("utilities_313.csv").then(function (data) {
   processedData = processData(data);
@@ -308,6 +411,7 @@ d3.csv("utilities_313.csv").then(function (data) {
   updateTreemap(processedData);
   updateStackedBar(processedData);
   updateSummary(processedData);
+  createTable(processedData);
 });
 
 // event listeners for toggle switches
