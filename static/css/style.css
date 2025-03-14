@@ -1,0 +1,156 @@
+/* Bootstrap navbar */
+.custom-navbar {
+    background-color: rgba(255, 255, 255, 0.8);
+    border-bottom: 1px solid rgba(249, 249, 249, 0.8);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 10px 0; /* vertical padding */
+}
+
+/* slider styling */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 25px;
+    margin-right: 10px; /* space between switch and label */
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    border-radius: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 17px;
+    width: 17px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    border-radius: 50%; /* circle inside toggle */
+    transition: transform 0.3s ease;
+}
+
+/* fill background color when checked */
+.switch input:checked + .slider {
+    background-color: #0085A1;
+}
+
+.switch input:checked + .slider:before {
+    transform: translateX(25px); /* move circle right */
+}
+
+/* toggle label */
+.toggle-label {
+    font-size: 1.2rem;
+    color: black;
+    vertical-align: middle; /* middle of toggle */
+}
+
+/* header container */
+#title {
+    /* background-color: #2a9d8f; */
+    background-color: #0085A1;
+    color: #ffffff;
+    /* color: #0085A1; */
+    border: 2px solid #1d5d5c;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    text-align: center;
+    margin: 0 auto;
+    transition: color 0.3s ease;
+    margin-bottom: 20px;
+    margin-top: 60px;
+}
+
+#title:hover {
+    color: #e9c46a;
+    /* color: #005f73; */
+}
+
+#title h3 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+#title h3:hover {
+    color: #e9c46a;
+    /* color: #005f73; */
+    transition: color 0.3s ease;
+}
+
+/* toggle container styling */
+#toggle-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    padding: 5px;
+    margin: 5px auto;
+    margin-top: 0px;
+    margin-bottom: 40px;
+    width: 80%;
+}
+
+#line-chart-container {
+    position: relative;
+    margin-bottom: 40px;
+}
+
+/* summary box */
+#summary-box {
+    background-image: url('../images/background.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    border: 2px solid white;
+    border-radius: 15px;
+    width: 70%;
+    margin: 0 auto;
+}
+
+#summary-box b {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+/* plot */
+.plot {
+    margin-bottom: 10px;
+    overflow-x: hidden;
+    color: #333333;
+    border: 2px solid #e0e0e0;
+    padding: 0px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    width: 90%;
+    height: 500px;
+    box-sizing: border-box;
+    text-align: center;
+    margin: 20px auto;
+}

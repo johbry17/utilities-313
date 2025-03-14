@@ -178,14 +178,14 @@ function updateSummary(data) {
   ).toLocaleString("default", { month: "long", year: "numeric" });
 
   document.getElementById("summary-box").innerHTML = `
-        <p>Total Spent: $${totalSpent.toLocaleString("en-US", {
+        <p>Total Spent:<br><b>$${totalSpent.toLocaleString("en-US", {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
-        })}</p>
-        <p>Total Amount per Person: $${totalPerPerson.toLocaleString("en-US", {
+        })}</b></p>
+        <p>Total Amount per Person:<br><b>$${totalPerPerson.toLocaleString("en-US", {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
-        })}</p>
+        })}</b></p>
         <p>${minDate} - ${maxDate}</p>
     `;
 }
@@ -408,24 +408,55 @@ function createTable(processedData) {
   Plotly.newPlot("table", tableData, layout);
 }
 
+// function to resize all Plotly plots
+function resizePlots() {
+    const plots = document.querySelectorAll(".plot");
+    plots.forEach((plot) => {
+      Plotly.Plots.resize(plot);
+    });
+  }
+
 // inital load data and update charts
 d3.csv("resources/utilities_313.csv").then(function (data) {
   processedData = processData(data);
   updateLineChart(processedData);
+  updateSummary(processedData);
   updateTreemap(processedData);
   updateStackedBar(processedData);
-  updateSummary(processedData);
   createTable(processedData);
+  resizePlots();
 });
 
 // event listeners for toggle switches
 document.getElementById("toggle-per-person").addEventListener("change", () => {
   updateLineChart(processedData);
+  updateSummary(processedData);
   updateTreemap(processedData);
   updateStackedBar(processedData);
-  updateSummary(processedData);
+  resizePlots();
+
+  const toggleLabel = document.querySelector(".toggle-label");
+  if (document.getElementById("toggle-per-person").checked) {
+    toggleLabel.style.color = "#0085A1";
+    toggleLabel.style.fontWeight = "bold";
+  } else {
+    toggleLabel.style.color = "black";
+    toggleLabel.style.fontWeight = "normal";
+  }
 });
 
 document.getElementById("toggle-category").addEventListener("change", () => {
   updateLineChart(processedData);
+  resizePlots();
+
+  const toggleLabel = document.querySelector("#toggle-container .toggle-label");
+  if (document.getElementById("toggle-category").checked) {
+      toggleLabel.style.color = "#0085A1";
+      toggleLabel.style.fontWeight = "bold";
+  } else {
+      toggleLabel.style.color = "black";
+      toggleLabel.style.fontWeight = "normal";
+  }
 });
+
+window.addEventListener("resize", resizePlots);
