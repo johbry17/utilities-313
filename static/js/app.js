@@ -212,12 +212,12 @@ function updateTreemap(data) {
   const chartTitle = isPerPerson
     ? "Expenses <b>per Person</b>"
     : "Total Expenses";
-    const hoverTemplates = labels.map((label, i) => {
-        if (!adjustedValues[i]) return ""; // no hover text for the root node
-        return isPerPerson // conditional hover text based on toggle
-          ? "<b>%{label}</b><br>Total per Person: $%{value:,.2f}<br>% of Total: %{customdata:.2f}%<extra></extra>"
-          : "<b>%{label}</b><br>Total: $%{value:,.2f}<br>% of Total: %{customdata:.2f}%<extra></extra>";
-      });
+  const hoverTemplates = labels.map((label, i) => {
+    if (!adjustedValues[i]) return ""; // no hover text for the root node
+    return isPerPerson // conditional hover text based on toggle
+      ? "<b>%{label}</b><br>Total per Person: $%{value:,.2f}<br>% of Total: %{customdata:.2f}%<extra></extra>"
+      : "<b>%{label}</b><br>Total: $%{value:,.2f}<br>% of Total: %{customdata:.2f}%<extra></extra>";
+  });
 
   // create trace
   const trace = {
@@ -409,7 +409,7 @@ function createTable(processedData) {
 }
 
 // inital load data and update charts
-d3.csv("utilities_313.csv").then(function (data) {
+d3.csv("resources/utilities_313.csv").then(function (data) {
   processedData = processData(data);
   updateLineChart(processedData);
   updateTreemap(processedData);
