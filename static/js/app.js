@@ -125,4 +125,4 @@ document.getElementById("toggle-category").addEventListener("change", () => {
   }
 });
 
-window.addEventListener("resize", resizePlots);
+window.addEventListener("resize", resizePlots());

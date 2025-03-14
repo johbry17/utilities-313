@@ -105,11 +105,11 @@ function updateLineChart(data) {
   // dynamic chart title
   const chartTitle = isCategory
     ? isPerPerson
-      ? "Utilities per Month<br><b>per Person</b> by Category"
-      : "Utilities per Month<br>by Category"
+      ? "Monthly Utilities<br><b>per Person</b> by Category"
+      : "Monthly Utilities<br>by Category"
     : isPerPerson
-    ? "Utilities per Month<br><b>per Person</b>"
-    : "Utilities per Month";
+    ? "Monthly Utilities<br><b>per Person</b>"
+    : "Monthly Utilities";
 
   // set y-axis range, excluding Total
   const yMax = Math.max(
@@ -118,13 +118,18 @@ function updateLineChart(data) {
       .flatMap((trace) => trace.y.filter((y) => y !== null))
   );
 
+  const isMobile = window.innerWidth <= 768;
+
   // layout with dynamic title
   const layout = {
     title: chartTitle,
-    xaxis: { title: "Date" },
+    xaxis: {
+      title: window.innerWidth > 768 ? "Date" : "",
+    },
     yaxis: {
-      title: "Amount ($)",
+      title: window.innerWidth > 768 ? "Amount" : "",
       range: [0, yMax * 1.1],
+      tickprefix: "$",
     },
     legend: {
       orientation: "h",
@@ -132,6 +137,12 @@ function updateLineChart(data) {
       xanchor: "center",
       y: -0.2,
     },
+    margin: {
+        t: isMobile ? 40 : 80,
+        b: isMobile ? 30 : 80,
+        l: isMobile ? 30 : 80,
+        r: isMobile ? 10 : 80,
+      },
   };
 
   Plotly.newPlot("line-chart", traces, layout);
@@ -183,8 +194,16 @@ function updateTreemap(data) {
     },
   };
 
+  const isMobile = window.innerWidth <= 768;
+
   const layout = {
     title: chartTitle,
+    margin: {
+        t: isMobile ? 40 : 80,
+        b: isMobile ? 30 : 80,
+        l: isMobile ? 30 : 80,
+        r: isMobile ? 30 : 80,
+      },
   };
 
   Plotly.newPlot("treemap-chart", [trace], layout);
@@ -203,8 +222,8 @@ function updateStackedBar(data) {
   // check toggle
   const isPerPerson = document.getElementById("toggle-per-person").checked;
   const chartTitle = isPerPerson
-    ? "Expenses per Month<br><b>per Person</b>"
-    : "Total Expenses per Month";
+    ? "Monthly Expenses<br><b>per Person</b>"
+    : "Total Monthly Expenses";
 
   // create traces for each category
   const traces = categories.map((category) => {
@@ -246,18 +265,31 @@ function updateStackedBar(data) {
     showlegend: false, // hide trace from legend
   };
 
+  const isMobile = window.innerWidth <= 768; 
+
   // layout with dynamic title
   const layout = {
     title: chartTitle,
     barmode: "stack",
-    xaxis: { title: "Date" },
-    yaxis: { title: "Amount ($)" },
+    xaxis: {
+      title: window.innerWidth > 768 ? "Date" : "",
+    },
+    yaxis: {
+      title: window.innerWidth > 768 ? "Amount" : "",
+      tickprefix: "$",
+    },
     legend: {
       orientation: "h",
       x: 0.5,
       xanchor: "center",
       y: -0.2,
     },
+    margin: {
+        t: isMobile ? 40 : 80, // Smaller top margin on mobile
+        b: isMobile ? 30 : 80, // Smaller bottom margin on mobile
+        l: isMobile ? 30 : 80, // Smaller left margin on mobile
+        r: isMobile ? 10 : 80, // Smaller right margin on mobile
+      },
   };
 
   // plot chart
@@ -342,7 +374,7 @@ function createTable(processedData) {
           "<b>Max per Person</b>",
           "<b>Min per Person</b>",
           "<b>Avg per Person</b>",
-          "<b>Total per Person</b>",
+          "<b>Annual per Person</b>",
         ],
         fill: { color: "paleturquoise" },
         align: "right",
@@ -358,7 +390,7 @@ function createTable(processedData) {
   ];
 
   const layout = {
-    title: "Max, Min, Average, and Total Amount<br>per Person per Year",
+    title: "Max, Min, Average, and Total<br>Monthly Bill per Person per Year",
     margin: { t: 50, l: 25, r: 25, b: 25 },
   };
 

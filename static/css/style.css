@@ -186,3 +186,13 @@
     text-align: center;
     margin: 20px auto;
 }
+
+/* #line-chart {
+    height: auto;
+    min-height: 500px;
+} */
+
+#table {
+    height: auto;
+    min-height: 250px;
+}
