@@ -89,6 +89,8 @@ d3.csv("resources/utilities_313.csv").then(function (data) {
   updateStackedBar(processedData);
   createTable(processedData);
   resizePlots();
+  document.querySelector(".toggle-label").style.color = "#A9A9A9";
+  document.querySelector("#toggle-container .toggle-label").style.color = "#A9A9A9";
 });
 
 // event listeners for toggle switches
@@ -104,7 +106,7 @@ document.getElementById("toggle-per-person").addEventListener("change", () => {
     toggleLabel.style.color = "#0085A1";
     toggleLabel.style.fontWeight = "bold";
   } else {
-    toggleLabel.style.color = "black";
+    toggleLabel.style.color = "#A9A9A9";
     toggleLabel.style.fontWeight = "normal";
   }
 });
@@ -118,7 +120,7 @@ document.getElementById("toggle-category").addEventListener("change", () => {
       toggleLabel.style.color = "#0085A1";
       toggleLabel.style.fontWeight = "bold";
   } else {
-      toggleLabel.style.color = "black";
+      toggleLabel.style.color = "#A9A9A9"
       toggleLabel.style.fontWeight = "normal";
   }
 });
