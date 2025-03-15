@@ -90,6 +90,13 @@
 .noUi-handle:after {
   display: none !important; /* hides default handle decorations */
 }
+
+/* space body below navbar */
+body#index-page #title {
+    margin-top: 90px;
+    margin-bottom: 20px;
+    width: 90%;
+}
   
 /* header or title */
 #title {
@@ -109,8 +116,7 @@
     text-align: center;
     margin: 0 auto;
     transition: color 0.3s ease;
-    margin-bottom: 20px;
-    margin-top: 90px;
+    /* margin-bottom: 20px; */
 }
 
 #title:hover {
@@ -214,11 +220,6 @@
     text-align: center;
     margin: 20px auto;
 }
-
-/* #line-chart {
-    height: auto;
-    min-height: 500px;
-} */
 
 #table {
     height: auto;
