@@ -64,21 +64,24 @@ function updateSummary(data) {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
         })}</b></p>
-        <p>Total Amount per Person:<br><b>$${totalPerPerson.toLocaleString("en-US", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        })}</b></p>
+        <p>Total Amount per Person:<br><b>$${totalPerPerson.toLocaleString(
+          "en-US",
+          {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }
+        )}</b></p>
         <p>${minDate} - ${maxDate}</p>
     `;
 }
 
 // function to resize all Plotly plots
 function resizePlots() {
-    const plots = document.querySelectorAll(".plot");
-    plots.forEach((plot) => {
-      Plotly.Plots.resize(plot);
-    });
-  }
+  const plots = document.querySelectorAll(".plot");
+  plots.forEach((plot) => {
+    Plotly.Plots.resize(plot);
+  });
+}
 
 // inital load data and update charts
 d3.csv("resources/utilities_313.csv").then(function (data) {
@@ -90,7 +93,8 @@ d3.csv("resources/utilities_313.csv").then(function (data) {
   createTable(processedData);
   resizePlots();
   document.querySelector(".toggle-label").style.color = "#A9A9A9";
-  document.querySelector("#toggle-container .toggle-label").style.color = "#A9A9A9";
+  document.querySelector("#toggle-container .toggle-label").style.color =
+    "#A9A9A9";
 });
 
 // event listeners for toggle switches
@@ -117,11 +121,11 @@ document.getElementById("toggle-category").addEventListener("change", () => {
 
   const toggleLabel = document.querySelector("#toggle-container .toggle-label");
   if (document.getElementById("toggle-category").checked) {
-      toggleLabel.style.color = "#0085A1";
-      toggleLabel.style.fontWeight = "bold";
+    toggleLabel.style.color = "#0085A1";
+    toggleLabel.style.fontWeight = "bold";
   } else {
-      toggleLabel.style.color = "#A9A9A9"
-      toggleLabel.style.fontWeight = "normal";
+    toggleLabel.style.color = "#A9A9A9";
+    toggleLabel.style.fontWeight = "normal";
   }
 });
 

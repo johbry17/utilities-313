@@ -118,16 +118,17 @@ function updateLineChart(data) {
       .flatMap((trace) => trace.y.filter((y) => y !== null))
   );
 
+  // for foramtting on mobile
   const isMobile = window.innerWidth <= 768;
 
   // layout with dynamic title
   const layout = {
     title: chartTitle,
     xaxis: {
-      title: window.innerWidth > 768 ? "Date" : "",
+      title: isMobile ? "" : "Date",
     },
     yaxis: {
-      title: window.innerWidth > 768 ? "Amount" : "",
+      title: isMobile ? "" : "Amount",
       range: [0, yMax * 1.1],
       tickprefix: "$",
     },
@@ -138,11 +139,11 @@ function updateLineChart(data) {
       y: -0.2,
     },
     margin: {
-        t: isMobile ? 40 : 80,
-        b: isMobile ? 30 : 80,
-        l: isMobile ? 30 : 80,
-        r: isMobile ? 10 : 80,
-      },
+      t: isMobile ? 40 : 80,
+      b: isMobile ? 30 : 80,
+      l: isMobile ? 30 : 80,
+      r: isMobile ? 10 : 80,
+    },
   };
 
   Plotly.newPlot("line-chart", traces, layout);
@@ -194,16 +195,17 @@ function updateTreemap(data) {
     },
   };
 
+  // for formatting on mobile
   const isMobile = window.innerWidth <= 768;
 
   const layout = {
     title: chartTitle,
     margin: {
-        t: isMobile ? 40 : 80,
-        b: isMobile ? 30 : 80,
-        l: isMobile ? 30 : 80,
-        r: isMobile ? 30 : 80,
-      },
+      t: isMobile ? 40 : 80,
+      b: isMobile ? 30 : 80,
+      l: isMobile ? 30 : 80,
+      r: isMobile ? 30 : 80,
+    },
   };
 
   Plotly.newPlot("treemap-chart", [trace], layout);
@@ -265,17 +267,18 @@ function updateStackedBar(data) {
     showlegend: false, // hide trace from legend
   };
 
-  const isMobile = window.innerWidth <= 768; 
+  // for formatting on mobile
+  const isMobile = window.innerWidth <= 768;
 
   // layout with dynamic title
   const layout = {
     title: chartTitle,
     barmode: "stack",
     xaxis: {
-      title: window.innerWidth > 768 ? "Date" : "",
+      title: isMobile ? "" : "Date",
     },
     yaxis: {
-      title: window.innerWidth > 768 ? "Amount" : "",
+      title: isMobile ? "" : "Amount",
       tickprefix: "$",
     },
     legend: {
@@ -285,11 +288,11 @@ function updateStackedBar(data) {
       y: -0.2,
     },
     margin: {
-        t: isMobile ? 40 : 80, // Smaller top margin on mobile
-        b: isMobile ? 30 : 80, // Smaller bottom margin on mobile
-        l: isMobile ? 30 : 80, // Smaller left margin on mobile
-        r: isMobile ? 10 : 80, // Smaller right margin on mobile
-      },
+      t: isMobile ? 40 : 80,
+      b: isMobile ? 30 : 80,
+      l: isMobile ? 30 : 80,
+      r: isMobile ? 10 : 80,
+    },
   };
 
   // plot chart
@@ -356,7 +359,7 @@ function createTable(processedData) {
 
   // Sort by year
   yearlyStats.sort((a, b) => a[0] - b[0]);
-  console.log(yearlyStats);
+
   // columns for table
   const years = yearlyStats.map((d) => d[0]);
   const maxAmounts = yearlyStats.map((d) => `$${d[1].max.toFixed(2)}`);
