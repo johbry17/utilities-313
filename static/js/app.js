@@ -15,7 +15,20 @@ let processedData = [];
 // group data by year, month, and expense to consolidate Electric expenses per month
 function processData(data) {
   data.forEach((d) => {
-    d.Date = new Date(d.Date); // convert string to date
+    // switch data types for processing
+    d.Date = new Date(d.Date);
+    d.Year = +d.Year;
+    d.Month = +d.Month;
+    d.Amount = parseFloat(d.Amount);
+
+    // data.forEach((d) => {
+      if (d.Year === 2023 && d.Month === 6 && d.Expense === "CleanChoice") {
+        d.Amount -= 143.5; // Subtract 143.5 from June 2023, CleanChoice
+      }
+      if (d.Year === 2023 && d.Month === 5 && d.Expense === "Pepco") {
+        d.Amount += 143.5; // Add 143.5 to May 2023, Pepco
+      }
+    // });
     if (d.Expense === "Pepco" || d.Expense === "CleanChoice")
       d.Expense = "Electric";
   });
@@ -120,11 +133,11 @@ window.addEventListener("resize", resizePlots());
 
 // function to resize all Plotly plots
 function resizePlots() {
-    const plots = document.querySelectorAll(".plot");
-    plots.forEach((plot) => {
-      Plotly.Plots.resize(plot);
-    });
-  }
+  const plots = document.querySelectorAll(".plot");
+  plots.forEach((plot) => {
+    Plotly.Plots.resize(plot);
+  });
+}
 
 // initialize dual-ended slider
 function initializeDateSlider(data) {
@@ -198,19 +211,18 @@ function formatDate(date) {
   )}`;
 }
 
-
 // summary stats box
 function updateSummary(data) {
-    const totalSpent = d3.sum(data, (d) => d.Amount);
-    const totalPerPerson = totalSpent / 3;
-    const minDate = new Date(
-      d3.min(data, (d) => new Date(d.Year, d.Month))
-    ).toLocaleString("default", { month: "long", year: "numeric" });
-    const maxDate = new Date(
-      d3.max(data, (d) => new Date(d.Year, d.Month))
-    ).toLocaleString("default", { month: "long", year: "numeric" });
-  
-    document.getElementById("summary-box").innerHTML = `
+  const totalSpent = d3.sum(data, (d) => d.Amount);
+  const totalPerPerson = totalSpent / 3;
+  const minDate = new Date(
+    d3.min(data, (d) => new Date(d.Year, d.Month))
+  ).toLocaleString("default", { month: "long", year: "numeric" });
+  const maxDate = new Date(
+    d3.max(data, (d) => new Date(d.Year, d.Month))
+  ).toLocaleString("default", { month: "long", year: "numeric" });
+
+  document.getElementById("summary-box").innerHTML = `
           <p>Total Spent:<br><b>$${totalSpent.toLocaleString("en-US", {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
@@ -224,5 +236,4 @@ function updateSummary(data) {
           )}</b></p>
           <p>${minDate} - ${maxDate}</p>
       `;
-  }
-  
+}
