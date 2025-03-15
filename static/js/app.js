@@ -21,18 +21,21 @@ function processData(data) {
     d.Month = +d.Month;
     d.Amount = parseFloat(d.Amount);
 
-    // data.forEach((d) => {
-      if (d.Year === 2023 && d.Month === 6 && d.Expense === "CleanChoice") {
-        d.Amount -= 143.5; // Subtract 143.5 from June 2023, CleanChoice
-      }
-      if (d.Year === 2023 && d.Month === 5 && d.Expense === "Pepco") {
-        d.Amount += 143.5; // Add 143.5 to May 2023, Pepco
-      }
-    // });
+    // adjust the Electric expenses for June 2023 and May 2023
+    if (d.Year === 2023 && d.Month === 6 && d.Expense === "CleanChoice") {
+      d.Amount -= 143.5; // Subtract 143.5 from June 2023, CleanChoice
+    }
+    if (d.Year === 2023 && d.Month === 5 && d.Expense === "Pepco") {
+      d.Amount += 143.5; // Add 143.5 to May 2023, Pepco
+    }
+
+    // reassign CleanChoice and Pepco to Electric
     if (d.Expense === "Pepco" || d.Expense === "CleanChoice")
       d.Expense = "Electric";
   });
 
+  // dynamically remove the last month of data, 
+  // since it is usually incomplete
   const maxDate = d3.max(data, (d) => d.Date);
   data = data.filter((d) => d.Date < maxDate);
 
@@ -70,6 +73,7 @@ d3.csv("resources/utilities_313.csv").then(function (data) {
   processedData = processData(data);
   initializeDateSlider(processedData);
   createTable(processedData);
+  createYearsLineChart(processedData);
   updateAllComponents();
 });
 
