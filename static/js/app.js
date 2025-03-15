@@ -9,10 +9,12 @@
 let processedData = [];
 
 // clean data for use
-// calculate amount per person
+// adjust Electric expenses for June 2023 and May 2023
+// adjust Cleaning expenses for July 2024 and June 2024
+// reassign CleanChoice and Pepco to Electric
 // filter out the last month of data since it is usually incomplete
-// consolidate Pepco and CleanChoice into Electric
 // group data by year, month, and expense to consolidate Electric expenses per month
+// flatten grouped data
 function processData(data) {
   data.forEach((d) => {
     // switch data types for processing
@@ -24,18 +26,18 @@ function processData(data) {
 
     // adjust the Electric expenses for June 2023 and May 2023
     if (d.Year === 2023 && d.Month === 6 && d.Expense === "CleanChoice") {
-      console.log("Before CleanChoice for June 2023:", {
-        AmountBefore: d.Amount,
-      });
       d.Amount -= 143.5; // subtract 143.5 from June 2023, CleanChoice
-      console.log("After CleanChoice for June 2023:", {
-        AmountAfter: d.Amount,
-      });
     }
     if (d.Year === 2023 && d.Month === 5 && d.Expense === "Pepco") {
-      console.log("Before Pepco for May 2023:", { AmountBefore: d.Amount });
       d.Amount += 143.5; // add 143.5 to May 2023, Pepco
-      console.log("After Pepco for May 2023:", { AmountAfter: d.Amount });
+    }
+
+    // adjust the Cleaning expenses for July 2024 and June 2024
+    if (d.Year === 2024 && d.Month === 7 && d.Expense === "Cleaning") {
+      d.Amount -= 80; // subtract 80 from July 2024, Cleaning
+    }
+    if (d.Year === 2024 && d.Month === 6 && d.Expense === "Cleaning") {
+      d.Amount += 80; // add 80 to June 2024, Cleaning
     }
 
     // reassign CleanChoice and Pepco to Electric
@@ -49,7 +51,7 @@ function processData(data) {
   data = data.filter((d) => d.Date < maxDate);
 
   // group by year, month, and expense type, then sum Amount
-  // for combining Pepco and CleanChoice into Electric
+  // because Electric expenses are split between CleanChoice and Pepco
   const monthly_expense = d3.rollup(
     data,
     (v) => d3.sum(v, (d) => d.Amount),
@@ -59,7 +61,6 @@ function processData(data) {
   );
 
   // convert grouped data to a flat array
-  // continuing combining Pepco and CleanChoice into Electric
   const flat_data = [];
   monthly_expense.forEach((yearData, year) => {
     yearData.forEach((monthData, month) => {
@@ -265,13 +266,13 @@ function updateSummary(data) {
     <div style="margin: 5px 0;"><u>Monthly Bills:</u></div>
     <div style="margin: 5px 0; gap: 10px;">
         <span>Max: $${(maxMonthly / 3).toLocaleString("en-US", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
         })}</span>
         <i class="fas fa-arrows-alt-h"></i>
         <span>Min: $${(minMonthly / 3).toLocaleString("en-US", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
         })}</span>
     </div>
     <div style="margin: 5px 0;">Average:
