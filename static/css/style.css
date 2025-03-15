@@ -63,6 +63,34 @@
     vertical-align: middle; /* middle of toggle */
 }
 
+/* date range */
+.date-display {
+    font-size: 1rem;
+    color: #333;
+  }
+
+/* noUiSlider styling */
+.noUi-connect {
+  background: rgba(0, 133, 161, 0.5) !important; /* change fill color */
+}
+  
+.noUi-handle {
+  width: 10px;
+  height: 10px;
+  background: white;
+  border: 2px solid;
+  border-radius: 50% !important; /* Makes the handle circular */
+  cursor: pointer;
+  position: absolute !important; /* handle on top */
+  top: 50%;
+  transform: translateY(50%); /* center handle on bottom of range */
+}
+
+.noUi-handle:before,
+.noUi-handle:after {
+  display: none !important; /* hides default handle decorations */
+}
+  
 /* header or title */
 #title {
     /* background-color: #2a9d8f; */
@@ -82,7 +110,7 @@
     margin: 0 auto;
     transition: color 0.3s ease;
     margin-bottom: 20px;
-    margin-top: 60px;
+    margin-top: 90px;
 }
 
 #title:hover {
