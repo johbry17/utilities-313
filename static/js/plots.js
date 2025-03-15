@@ -121,7 +121,7 @@ function updateLineChart(data) {
   // for foramtting on mobile
   const isMobile = window.innerWidth <= 768;
 
-  // layout with dynamic title
+  // layout with dynamic title, mobile responsiveness
   const layout = {
     title: chartTitle,
     xaxis: {
@@ -270,7 +270,7 @@ function updateStackedBar(data) {
   // for formatting on mobile
   const isMobile = window.innerWidth <= 768;
 
-  // layout with dynamic title
+  // layout with dynamic title, mobile responsiveness
   const layout = {
     title: chartTitle,
     barmode: "stack",
@@ -357,7 +357,7 @@ function createTable(processedData) {
     (d) => d.Year
   );
 
-  // Sort by year
+  // sort by year
   yearlyStats.sort((a, b) => a[0] - b[0]);
 
   // columns for table
@@ -367,7 +367,7 @@ function createTable(processedData) {
   const avgAmounts = yearlyStats.map((d) => `$${d[1].avg.toFixed(2)}`);
   const totalAmounts = yearlyStats.map((d) => `$${d[1].total.toFixed(2)}`);
 
-  // Create the Plotly table
+  // create table
   const tableData = [
     {
       type: "table",
@@ -401,17 +401,28 @@ function createTable(processedData) {
 }
 
 function createYearsLineChart(data) {
-    // convert month numbers to names
-    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    
+  // convert month numbers to names
+  const monthNames = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
 
-    // JavaScript's month is 0 indexed, December is month 11
-    // so to filter out data before January 2021,
-    // I first must filter out data before month 12 of 2020
-    const filteredData = data.filter(
-        (d) => d.Year > 2020 || (d.Year === 2020 && d.Month >= 12)
-      );
-
+  // JavaScript's month is 0 indexed, December is month 11
+  // so to filter out data before January 2021,
+  // I first must filter out data before month 12 of 2020
+  const filteredData = data.filter(
+    (d) => d.Year > 2020 || (d.Year === 2020 && d.Month >= 12)
+  );
 
   // this adjusts the month and year to account for the 0-indexed month
   const adjustedData = filteredData.map((d) => {
@@ -434,48 +445,50 @@ function createYearsLineChart(data) {
 
   console.log("Grouped and consolidated data by year and month:", groupedData);
 
-  // Prepare traces
+  // create traces
   let traces = [];
   groupedData.forEach(([year, months]) => {
     traces.push({
       x: months.map(([month, totalAmount]) => monthNames[month - 1]), // convert month numbers to names
       y: months.map(([month, totalAmount]) => totalAmount / 3), // divide by 3 for per person
-      customdata: months.map(([month, totalAmount]) => ({ // for hover template
+      customdata: months.map(([month, totalAmount]) => ({
+        // for hover template
         year: year,
         amount: totalAmount / 3,
       })),
       mode: "lines",
       name: year.toString(), // convert year to string for legend
-      hovertemplate: "%{x} %{customdata.year}<br>$%{customdata.amount:,.2f}<extra></extra>",
+      hovertemplate:
+        "%{x} %{customdata.year}<br>$%{customdata.amount:,.2f}<extra></extra>",
     });
   });
 
-  
-    // Define layout
-    let layout = {
-      title: "Individual Years<br><b>per Person</b>",
-      xaxis: {
-        title: "",
-      },
-      yaxis: {
-        title: "",
-        tickprefix: "$",
-      },
-      margin: {
-        t: 40,
-        b: 30,
-        l: 40,
-        r: 20,
-      },
-      legend: {
-        orientation: "h",
-        x: 0.5,
-        xanchor: "center",
-        y: -0.2,
-      },
-    };
-  
-    // Render Plotly chart in #years-line div
-    Plotly.newPlot("years-line", traces, layout);
-  }
-  
+  // for formatting on mobile
+  const isMobile = window.innerWidth <= 768;
+
+  // mobile responsive layout
+  let layout = {
+    title: "Individual Years<br><b>per Person</b>",
+    xaxis: {
+      title: isMobile ? "" : "Month",
+    },
+    yaxis: {
+      title: isMobile ? "" : "Amount",
+      tickprefix: "$",
+    },
+    margin: {
+      t: isMobile ? 40 : 80,
+      b: isMobile ? 30 : 80,
+      l: isMobile ? 40 : 80,
+      r: isMobile ? 20 : 80,
+    },
+    legend: {
+      orientation: "h",
+      x: 0.5,
+      xanchor: "center",
+      y: -0.2,
+    },
+  };
+
+  Plotly.newPlot("years-line", traces, layout);
+}
