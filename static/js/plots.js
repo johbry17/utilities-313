@@ -301,30 +301,12 @@ function updateStackedBar(data) {
 
 // create static summary of expenses
 function createTable(processedData) {
-  // JavaScript's month is 0 indexed
-  // this is a terribly annoying problem
-  // so to get data starting at Jan 2021, I first must
-  // filter out data before December 2020
-  const filteredData = processedData.filter(
-    (d) => d.Year > 2020 || (d.Year === 2020 && d.Month >= 12)
-  );
-
-  // now that I have filtered the data
-  // I have to increment the month by 1
-  // and then check if it is greater than 12
-  // to wrap around to 1 and increment the year
-  const adjustedFilteredData = filteredData.map((d) => {
-    const newMonth = d.Month + 1; // increment the month
-    return {
-      ...d,
-      Month: newMonth > 12 ? 1 : newMonth,
-      Year: newMonth > 12 ? d.Year + 1 : d.Year,
-    };
-  });
+  // filter out data before 2021
+  const filteredData = processedData.filter((d) => d.Year > 2020);
 
   // group data by year and month, then sum the Amount
   const monthlyTotals = d3.rollups(
-    adjustedFilteredData,
+    filteredData,
     (v) => d3.sum(v, (d) => d.Amount),
     (d) => d.Year,
     (d) => d.Month
@@ -417,33 +399,16 @@ function createYearsLineChart(data) {
     "Dec",
   ];
 
-  // JavaScript's month is 0 indexed, December is month 11
-  // so to filter out data before January 2021,
-  // I first must filter out data before month 12 of 2020
-  const filteredData = data.filter(
-    (d) => d.Year > 2020 || (d.Year === 2020 && d.Month >= 12)
-  );
-
-  // this adjusts the month and year to account for the 0-indexed month
-  const adjustedData = filteredData.map((d) => {
-    const newMonth = d.Month + 1; // increment the month
-    return {
-      ...d,
-      Month: newMonth > 12 ? 1 : newMonth, // wrap around to 1 if greater than 12
-      Year: newMonth > 12 ? d.Year + 1 : d.Year, // increment the year if the month wraps around
-      Amount: +d.Amount,
-    };
-  });
+  // filter out data before 2021
+  const filteredData = data.filter((d) => d.Year > 2020);
 
   // group data by Year and Month, then sum Amount
   const groupedData = d3.rollups(
-    adjustedData,
+    filteredData,
     (v) => d3.sum(v, (d) => d.Amount),
     (d) => d.Year,
     (d) => d.Month
   );
-
-  console.log("Grouped and consolidated data by year and month:", groupedData);
 
   // create traces
   let traces = [];

@@ -186,7 +186,7 @@ body#index-page #title {
 }
 
 /* summary box */
-#summary-box {
+.info-box {
     background-image: url('../images/background.jpg');
     background-size: cover;
     background-repeat: no-repeat;

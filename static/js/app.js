@@ -20,13 +20,22 @@ function processData(data) {
     d.Year = +d.Year;
     d.Month = +d.Month;
     d.Amount = parseFloat(d.Amount);
+    d.Date = new Date(d.Year, d.Month - 1);
 
     // adjust the Electric expenses for June 2023 and May 2023
     if (d.Year === 2023 && d.Month === 6 && d.Expense === "CleanChoice") {
-      d.Amount -= 143.5; // Subtract 143.5 from June 2023, CleanChoice
+      console.log("Before CleanChoice for June 2023:", {
+        AmountBefore: d.Amount,
+      });
+      d.Amount -= 143.5; // subtract 143.5 from June 2023, CleanChoice
+      console.log("After CleanChoice for June 2023:", {
+        AmountAfter: d.Amount,
+      });
     }
     if (d.Year === 2023 && d.Month === 5 && d.Expense === "Pepco") {
-      d.Amount += 143.5; // Add 143.5 to May 2023, Pepco
+      console.log("Before Pepco for May 2023:", { AmountBefore: d.Amount });
+      d.Amount += 143.5; // add 143.5 to May 2023, Pepco
+      console.log("After Pepco for May 2023:", { AmountAfter: d.Amount });
     }
 
     // reassign CleanChoice and Pepco to Electric
@@ -34,7 +43,7 @@ function processData(data) {
       d.Expense = "Electric";
   });
 
-  // dynamically remove the last month of data, 
+  // dynamically remove the last month of data,
   // since it is usually incomplete
   const maxDate = d3.max(data, (d) => d.Date);
   data = data.filter((d) => d.Date < maxDate);
@@ -74,26 +83,18 @@ d3.csv("resources/utilities_313.csv").then(function (data) {
   initializeDateSlider(processedData);
   createTable(processedData);
   createYearsLineChart(processedData);
-  updateAllComponents();
 });
-
-// filter data by date range, for plot updates
-function filterDataByDateRange(data, startDate, endDate) {
-  return data.filter((d) => {
-    const date = new Date(d.Year, d.Month - 1);
-    return date >= startDate && date <= endDate;
-  });
-}
 
 // updates all plots on change
 function updateAllComponents() {
-  // get the date range from the slider
-  const startDate = new Date(
-    document.getElementById("start-date-display").textContent
-  );
-  const endDate = new Date(
-    document.getElementById("end-date-display").textContent
-  );
+  // get date range from slider
+  const startDateText =
+    document.getElementById("start-date-display").textContent;
+  const endDateText = document.getElementById("end-date-display").textContent;
+
+  // parse dates from slider
+  const startDate = parseDateFromSlider(startDateText);
+  const endDate = parseDateFromSlider(endDateText);
 
   // filter data on selected date range
   filteredData = filterDataByDateRange(processedData, startDate, endDate);
@@ -109,31 +110,28 @@ function updateAllComponents() {
 // event listeners for toggle switches
 document.getElementById("toggle-per-person").addEventListener("change", () => {
   updateAllComponents();
-
-  const toggleLabel = document.querySelector(".toggle-label");
-  if (document.getElementById("toggle-per-person").checked) {
-    toggleLabel.style.color = "#0085A1";
-    toggleLabel.style.fontWeight = "bold";
-  } else {
-    toggleLabel.style.color = "#A9A9A9";
-    toggleLabel.style.fontWeight = "normal";
-  }
 });
 
 document.getElementById("toggle-category").addEventListener("change", () => {
   updateAllComponents();
-
-  const toggleLabel = document.querySelector("#toggle-container .toggle-label");
-  if (document.getElementById("toggle-category").checked) {
-    toggleLabel.style.color = "#0085A1";
-    toggleLabel.style.fontWeight = "bold";
-  } else {
-    toggleLabel.style.color = "#A9A9A9";
-    toggleLabel.style.fontWeight = "normal";
-  }
 });
 
-window.addEventListener("resize", resizePlots());
+// filter data by date range, for plot updates
+function filterDataByDateRange(data, startDate, endDate) {
+  return data.filter((d) => {
+    const date = new Date(d.Year, d.Month - 1);
+    return date >= startDate && date <= endDate;
+  });
+}
+
+// creates a Date object from the slider's date string
+// subtract 1 from the month to account for JavaScript's 0-indexed months
+function parseDateFromSlider(dateText) {
+  const [year, month] = dateText.split("-").map(Number);
+  return new Date(year, month - 1);
+}
+
+window.addEventListener("resize", resizePlots);
 
 // function to resize all Plotly plots
 function resizePlots() {
@@ -146,8 +144,8 @@ function resizePlots() {
 // initialize dual-ended slider
 function initializeDateSlider(data) {
   // get min and max dates
-  const minDate = d3.min(data, (d) => new Date(d.Year, d.Month));
-  const maxDate = d3.max(data, (d) => new Date(d.Year, d.Month));
+  const minDate = d3.min(data, (d) => new Date(d.Year, d.Month - 1));
+  const maxDate = d3.max(data, (d) => new Date(d.Year, d.Month - 1));
 
   // array of months between minDate and maxDate
   const dateRange = d3.timeMonth.range(
@@ -178,32 +176,35 @@ function initializeDateSlider(data) {
     dateRange[dateRange.length - 1]
   );
 
-  // event listener to update charts on change
-  slider.noUiSlider.on("update", (values) => {
-    const startIndex = Math.round(values[0]);
-    const endIndex = Math.round(values[1]);
-
-    const startDate = dateRange[startIndex];
-    const endDate = dateRange[endIndex];
-
-    // update displayed start and end dates
-    document.getElementById("start-date-display").textContent =
-      formatDate(startDate);
-    document.getElementById("end-date-display").textContent =
-      formatDate(endDate);
-
-    // filter data based on selected date range
-    const filteredData = processedData.filter((d) => {
-      const date = new Date(d.Year, d.Month - 1);
-      return date >= startDate && date <= endDate;
-    });
-
-    // update charts
-    updateLineChart(filteredData);
-    updateSummary(filteredData);
-    updateTreemap(filteredData);
-    updateStackedBar(filteredData);
+  // event listener to update charts on slider change
+  slider.noUiSlider.on("update", () => {
+    updateChartsFromSlider(slider, dateRange);
   });
+}
+
+// update charts based on slider values
+function updateChartsFromSlider(slider, dateRange) {
+  const values = slider.noUiSlider.get(); // get slider values
+  const startIndex = Math.round(values[0]);
+  const endIndex = Math.round(values[1]);
+
+  const startDate = dateRange[startIndex];
+  const endDate = dateRange[endIndex];
+
+  // update displayed start and end dates
+  document.getElementById("start-date-display").textContent =
+    formatDate(startDate);
+  document.getElementById("end-date-display").textContent = formatDate(endDate);
+
+  // filter on selected date range
+  const filteredData = filterDataByDateRange(processedData, startDate, endDate);
+  console.log("sliderData:", filteredData);
+
+  // update charts
+  updateLineChart(filteredData);
+  updateSummary(filteredData);
+  updateTreemap(filteredData);
+  updateStackedBar(filteredData);
 }
 
 // slider support function
@@ -217,27 +218,69 @@ function formatDate(date) {
 
 // summary stats box
 function updateSummary(data) {
+  console.log("summaryData:", data);
+  // calculate total spent and total per person
   const totalSpent = d3.sum(data, (d) => d.Amount);
   const totalPerPerson = totalSpent / 3;
+
+  // get min and max dates
   const minDate = new Date(
-    d3.min(data, (d) => new Date(d.Year, d.Month))
+    d3.min(data, (d) => new Date(d.Year, d.Month - 1))
   ).toLocaleString("default", { month: "long", year: "numeric" });
   const maxDate = new Date(
-    d3.max(data, (d) => new Date(d.Year, d.Month))
+    d3.max(data, (d) => new Date(d.Year, d.Month - 1))
   ).toLocaleString("default", { month: "long", year: "numeric" });
 
+  // compute monthly stats
+  const groupedByMonth = d3.rollups(
+    data,
+    (v) => d3.sum(v, (d) => d.Amount),
+    (d) => `${d.Year}-${d.Month}`
+  );
+  const monthlyTotals = groupedByMonth.map(([_, total]) => total);
+  const maxMonthly = d3.max(monthlyTotals);
+  const minMonthly = d3.min(monthlyTotals);
+  const avgMonthly = d3.mean(monthlyTotals);
+  const stdDevMonthly = d3.deviation(monthlyTotals);
+
+  // update summary box
   document.getElementById("summary-box").innerHTML = `
-          <p>Total Spent:<br><b>$${totalSpent.toLocaleString("en-US", {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          })}</b></p>
-          <p>Total Amount per Person:<br><b>$${totalPerPerson.toLocaleString(
-            "en-US",
-            {
-              minimumFractionDigits: 2,
-              maximumFractionDigits: 2,
-            }
-          )}</b></p>
-          <p>${minDate} - ${maxDate}</p>
-      `;
+    <div style="margin: 5px 0;">${minDate} - ${maxDate}</div>
+    <p>Total Spent:<br>
+      <b>$${totalSpent.toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}</b>
+    </p>
+    <p>Total Amount per Person:<br>
+      <b>$${totalPerPerson.toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}</b>
+    </p>
+    <div style="margin: 5px 0;">Highest Monthly Bill:<br>
+        $${(maxMonthly / 3).toLocaleString("en-US", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}
+    </div>
+    <div style="margin: 5px 0;">Lowest Monthly Bill:<br>
+        $${(minMonthly / 3).toLocaleString("en-US", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}
+    </div>
+    <div style="margin: 5px 0;">Average Monthly Bill:<br>
+        $${(avgMonthly / 3).toLocaleString("en-US", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}
+    </div>
+    <div style="margin: 5px 0;">Standard Deviation:<br>
+        $${(stdDevMonthly / 3).toLocaleString("en-US", {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        })}
+    </div>
+  `;
 }
