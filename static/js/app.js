@@ -177,7 +177,13 @@ function initializeDateSlider(data) {
   );
 
   // event listener to update charts on slider change
+  // ignoring the first update event, which occurs on initialization
+  let isFirstUpdate = true;
   slider.noUiSlider.on("update", () => {
+    if (isFirstUpdate) {
+      isFirstUpdate = false; // change flag to false after first update
+      return;
+    }
     updateChartsFromSlider(slider, dateRange);
   });
 }
@@ -198,7 +204,6 @@ function updateChartsFromSlider(slider, dateRange) {
 
   // filter on selected date range
   const filteredData = filterDataByDateRange(processedData, startDate, endDate);
-  console.log("sliderData:", filteredData);
 
   // update charts
   updateLineChart(filteredData);
@@ -218,7 +223,6 @@ function formatDate(date) {
 
 // summary stats box
 function updateSummary(data) {
-  console.log("summaryData:", data);
   // calculate total spent and total per person
   const totalSpent = d3.sum(data, (d) => d.Amount);
   const totalPerPerson = totalSpent / 3;
