@@ -344,10 +344,34 @@ function createTable(processedData) {
 
   // columns for table
   const years = yearlyStats.map((d) => d[0]);
-  const maxAmounts = yearlyStats.map((d) => `$${d[1].max.toFixed(2)}`);
-  const minAmounts = yearlyStats.map((d) => `$${d[1].min.toFixed(2)}`);
-  const avgAmounts = yearlyStats.map((d) => `$${d[1].avg.toFixed(2)}`);
-  const totalAmounts = yearlyStats.map((d) => `$${d[1].total.toFixed(2)}`);
+  const maxAmounts = yearlyStats.map(
+    (d) =>
+      `$${d[1].max.toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`
+  );
+  const minAmounts = yearlyStats.map(
+    (d) =>
+      `$${d[1].min.toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`
+  );
+  const avgAmounts = yearlyStats.map(
+    (d) =>
+      `$${d[1].avg.toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`
+  );
+  const totalAmounts = yearlyStats.map(
+    (d) =>
+      `$${d[1].total.toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`
+  );
 
   // create table
   const tableData = [
