@@ -262,25 +262,25 @@ function updateSummary(data) {
         maximumFractionDigits: 2,
       })}</b>
     </p>
-    <div style="margin: 5px 0;">Highest Monthly Bill:<br>
-        $${(maxMonthly / 3).toLocaleString("en-US", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        })}
+    <div style="margin: 5px 0;"><u>Monthly Bills:</u></div>
+    <div style="margin: 5px 0; gap: 10px;">
+        <span>Max: $${(maxMonthly / 3).toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+        })}</span>
+        <i class="fas fa-arrows-alt-h"></i>
+        <span>Min: $${(minMonthly / 3).toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+        })}</span>
     </div>
-    <div style="margin: 5px 0;">Lowest Monthly Bill:<br>
-        $${(minMonthly / 3).toLocaleString("en-US", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        })}
-    </div>
-    <div style="margin: 5px 0;">Average Monthly Bill:<br>
+    <div style="margin: 5px 0;">Average:
         $${(avgMonthly / 3).toLocaleString("en-US", {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
         })}
     </div>
-    <div style="margin: 5px 0;">Standard Deviation:<br>
+    <div style="margin: 5px 0;">Standard Deviation:
         $${(stdDevMonthly / 3).toLocaleString("en-US", {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
