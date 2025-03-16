@@ -555,7 +555,7 @@ function createTable(processedData) {
   ];
 
   const layout = {
-    title: "Max, Min, Average, and Total<br>Monthly Bill per Person per Year",
+    title: "Monthly Bill per Person per Year<br><sup>Max, Min, Average, and Total</sup>",
     margin: {
       t: isMobile ? 80 : 80,
       b: isMobile ? 0 : 20,
