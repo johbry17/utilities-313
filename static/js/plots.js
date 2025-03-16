@@ -1,18 +1,18 @@
 // Description: plots, supporting app.js
 
-// consistent color palette for categories
-// const colorPalette = {
-//   Electric: "blue",
-//   Cleaning: "orange",
-//   Internet: "green",
-//   Gas: "red",
-// };
+// consistent color palette for categories, matching utilities_313_EDA.ipynb
 const colorPalette = {
   Electric: "red",
   Cleaning: "green",
   Internet: "orange",
   Gas: "blue",
 };
+// const colorPalette = {
+//   Electric: "blue",
+//   Cleaning: "orange",
+//   Internet: "green",
+//   Gas: "red",
+// };
 
 // timeseries chart of expenses per month
 function updateLineChart(data) {
