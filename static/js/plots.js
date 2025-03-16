@@ -555,7 +555,8 @@ function createTable(processedData) {
   ];
 
   const layout = {
-    title: "Monthly Bill per Person per Year<br><sup>Max, Min, Average, and Total</sup>",
+    title:
+      "Monthly Bill per Person per Year<br><sup>Max, Min, Average, and Total</sup>",
     margin: {
       t: isMobile ? 80 : 80,
       b: isMobile ? 0 : 20,
@@ -641,4 +642,109 @@ function createYearsLineChart(data) {
   };
 
   Plotly.newPlot("years-line", traces, layout);
+}
+
+// create monthly average stacked bar chart
+function createMonthlyAverageStackedBar(data) {
+  // group data by Year, Month, and Expense, calculate the total Amount
+  const groupedData = d3.rollups(
+    data,
+    (v) => d3.sum(v, (d) => d.Amount),
+    (d) => d.Year,
+    (d) => d.Month,
+    (d) => d.Expense
+  );
+
+  // flatten grouped data
+  const flattenedData = [];
+  groupedData.forEach(([year, months]) => {
+    months.forEach(([month, expenses]) => {
+      expenses.forEach(([expense, total]) => {
+        flattenedData.push({
+          Year: year,
+          Month: month,
+          Expense: expense,
+          Amount: total / 3, // divide by 3 for per person
+        });
+      });
+    });
+  });
+
+  // convert flattened data into a D3 nest grouped by Month and Expense
+  const monthlyAverages = d3.rollups(
+    flattenedData,
+    (v) => d3.mean(v, (d) => d.Amount), // calculate average for each month
+    (d) => d.Month,
+    (d) => d.Expense
+  );
+console.log(monthlyAverages)
+  // prep data
+  const expenseTypes = ["Gas", "Internet", "Cleaning", "Electric"]; // order of utilities
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+  const traces = [];
+
+  expenseTypes.forEach((expense) => {
+    const yValues = Array(12).fill(0); // array for 12 months with 0 values
+
+    monthlyAverages.forEach(([month, expenses]) => {
+      const expenseData = expenses.find(([e]) => e === expense);
+      if (expenseData) {
+        yValues[month - 1] = expenseData[1]; // assign average value to the correct month
+      }
+    });
+
+    // create trace
+    traces.push({
+      x: months,
+      y: yValues,
+      name: expense,
+      type: "bar",
+      hovertemplate: `Month: %{x}<br>Average per Person: $%{y:.2f}<br>Expense: ${expense}<extra></extra>`,
+    });
+  });
+  
+  // for formatting on mobile
+  const isMobile = window.innerWidth <= 768;
+
+  // create layout
+  const layout = {
+    barmode: "stack",
+    title: "Monthly Average Bills<br><b>per Person</b> by Utility Type",
+    xaxis: {
+      title: isMobile ? "" : "Month",
+      tickmode: "array",
+      tickvals: months,
+    },
+    yaxis: {
+      title: isMobile ? "" : "Average Amount ($)",
+      tickprefix: "$",
+    },
+    legend: {
+      orientation: "h",
+      x: 0.5,
+      xanchor: "center",
+      y: -0.2,
+    },
+    margin: {
+        t: isMobile ? 40 : 80,
+        b: isMobile ? 30 : 80,
+        l: isMobile ? 30 : 80,
+        r: isMobile ? 10 : 80,
+      },
+  };
+
+  Plotly.newPlot("monthly-average-stacked-bar", traces, layout);
 }
