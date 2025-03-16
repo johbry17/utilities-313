@@ -56,11 +56,18 @@
     transform: translateX(25px); /* move circle right */
 }
 
-/* toggle label */
+/* default toggle label */
 .toggle-label {
     font-size: 1.2rem;
-    color: black;
+    color: #808080;
+    font-weight: normal;
     vertical-align: middle; /* middle of toggle */
+}
+
+/* change label color when checked on */
+.switch:has(input:checked) + .toggle-label {
+  color: #0085A1;
+  font-weight: bold;
 }
 
 /* date range */

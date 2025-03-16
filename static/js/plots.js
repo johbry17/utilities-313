@@ -16,13 +16,19 @@ const colorPalette = {
 
 // timeseries chart of expenses per month
 function updateLineChart(data) {
+  // group data by Year and Month, then by Expense
   const groupedData = d3.group(
     data,
-    (d) => new Date(d.Year, d.Month),
+    (d) => new Date(d.Year, d.Month - 1), // adjust month for 0-based index
     (d) => d.Expense
   );
   const dates = Array.from(groupedData.keys());
   const categories = ["Gas", "Internet", "Cleaning", "Electric"];
+
+  // format dates as "MMM YYYY" for x-axis and hover
+  const formattedDates = dates.map((date) =>
+    date.toLocaleString("default", { month: "short", year: "numeric" })
+  );
 
   // check toggles
   const isPerPerson = document.getElementById("toggle-per-person").checked;
@@ -35,7 +41,7 @@ function updateLineChart(data) {
     // create trace for each category
     traces = categories.map((category) => {
       return {
-        x: dates,
+        x: formattedDates,
         y: dates.map((date) => {
           const categoryData = groupedData.get(date)?.get(category);
           const totalAmount = categoryData
@@ -51,7 +57,7 @@ function updateLineChart(data) {
       };
     });
 
-    // calculate totals for hover trace
+    // calculate totals for hover
     const totals = dates.map((date) => {
       return categories.reduce((sum, category) => {
         const categoryData = groupedData.get(date)?.get(category);
@@ -64,11 +70,11 @@ function updateLineChart(data) {
 
     // hidden trace for totals as hover text
     const totalTrace = {
-      x: dates,
+      x: formattedDates,
       y: totals,
       hovertemplate: isPerPerson
-        ? "Total per Person:<br>$%{customdata:.2f}<extra></extra>"
-        : "Total: $%{customdata:.2f}<extra></extra>",
+        ? "<b>Total per Person:</b><br>$%{customdata:.2f}<extra></extra>"
+        : "<b>Total:</b><br>$%{customdata:.2f}<extra></extra>",
       customdata: totals,
       mode: "text",
       name: "Total",
@@ -92,7 +98,7 @@ function updateLineChart(data) {
     // traces
     traces = [
       {
-        x: dates,
+        x: formattedDates,
         y: amounts,
         type: "scatter",
         mode: "lines",
@@ -105,11 +111,22 @@ function updateLineChart(data) {
   // dynamic chart title
   const chartTitle = isCategory
     ? isPerPerson
-      ? "Monthly Utilities<br><b>per Person</b> by Category"
-      : "Monthly Utilities<br>by Category"
+      ? "Monthly Utilities<br><b>per Person</b> by Type"
+      : "Monthly Utilities<br>by Type"
     : isPerPerson
     ? "Monthly Utilities<br><b>per Person</b>"
     : "Monthly Utilities";
+
+  // dynamic tick values and labels for layout
+  // one tick per year by default
+  let tickvals = formattedDates.filter((_, i) => i % 12 === 0);
+  let ticktext = tickvals.map((date) => date.split(" ")[1]);
+
+  // change ticks for smaller date ranges
+  if (dates.length <= 24) {
+    tickvals = formattedDates;
+    ticktext = formattedDates;
+  }
 
   // set y-axis range, excluding Total
   const yMax = Math.max(
@@ -118,7 +135,7 @@ function updateLineChart(data) {
       .flatMap((trace) => trace.y.filter((y) => y !== null))
   );
 
-  // for foramtting on mobile
+  // for formatting on mobile
   const isMobile = window.innerWidth <= 768;
 
   // layout with dynamic title, mobile responsiveness
@@ -126,6 +143,8 @@ function updateLineChart(data) {
     title: chartTitle,
     xaxis: {
       title: isMobile ? "" : "Date",
+      tickvals: tickvals,
+      ticktext: ticktext,
     },
     yaxis: {
       title: isMobile ? "" : "Amount",
@@ -144,6 +163,7 @@ function updateLineChart(data) {
       l: isMobile ? 30 : 80,
       r: isMobile ? 10 : 80,
     },
+    hovermode: "x", // show hover info for all traces
   };
 
   Plotly.newPlot("line-chart", traces, layout);
@@ -213,24 +233,31 @@ function updateTreemap(data) {
 
 // stacked bar chart of expenses per month
 function updateStackedBar(data) {
+  // group data by Year, Month, and Expense
   const groupedData = d3.group(
     data,
-    (d) => new Date(d.Year, d.Month),
+    (d) => new Date(d.Year, d.Month - 1), // adjust month for 0-based index
     (d) => d.Expense
   );
   const dates = Array.from(groupedData.keys());
+
+  // format dates as "MMM YYYY" for x-axis and hover
+  const formattedDates = dates.map((date) =>
+    date.toLocaleString("default", { month: "short", year: "numeric" })
+  );
+
   const categories = ["Gas", "Internet", "Cleaning", "Electric"];
 
   // check toggle
   const isPerPerson = document.getElementById("toggle-per-person").checked;
   const chartTitle = isPerPerson
-    ? "Monthly Expenses<br><b>per Person</b>"
-    : "Total Monthly Expenses";
+    ? "Monthly Expenses<br><b>per Person</b><br><sup>Stacked by Utility Type</sup>"
+    : "Total Monthly Expenses<br><sup>Stacked by Utility Type</sup>";
 
   // create traces for each category
   const traces = categories.map((category) => {
     return {
-      x: dates,
+      x: formattedDates,
       y: dates.map((date) => {
         const categoryData = groupedData.get(date)?.get(category);
         const totalAmount = categoryData
@@ -259,23 +286,38 @@ function updateStackedBar(data) {
 
   // trace for the totals as hover text
   const totalTrace = {
-    x: dates,
+    x: formattedDates,
     y: totals,
-    hovertemplate: "Total: $%{y:.2f}<extra></extra>",
+    hovertemplate: isPerPerson
+      ? "<b>Total<br>per Person:</b><br>$%{y:.2f}<extra></extra>"
+      : "<b>Total:</b><br>$%{y:.2f}<extra></extra>",
     mode: "text",
     name: "Total",
     showlegend: false, // hide trace from legend
   };
 
-  // for formatting on mobile
+  // dynamic tick values and labels for layout
+  // one tick per year by default
+  let tickvals = formattedDates.filter((_, i) => i % 12 === 0);
+  let ticktext = tickvals.map((date) => date.split(" ")[1]);
+
+  // change ticks for smaller date ranges
+  if (formattedDates.length <= 24) {
+    tickvals = formattedDates;
+    ticktext = formattedDates;
+  }
+
+  // for formatting layout on mobile
   const isMobile = window.innerWidth <= 768;
 
-  // layout with dynamic title, mobile responsiveness
+  // layout with mobile responsiveness
   const layout = {
     title: chartTitle,
     barmode: "stack",
     xaxis: {
       title: isMobile ? "" : "Date",
+      tickvals: tickvals,
+      ticktext: ticktext,
     },
     yaxis: {
       title: isMobile ? "" : "Amount",
@@ -293,6 +335,7 @@ function updateStackedBar(data) {
       l: isMobile ? 30 : 80,
       r: isMobile ? 10 : 80,
     },
+    hovermode: "x", // show hover info for all traces
   };
 
   // plot chart
@@ -434,7 +477,7 @@ function updateCategoryTable(data) {
   // layout
   const layout = {
     title: {
-      text: `Monthly Bill per Category<br><sup>Min, Max, Avg, and Standard Deviation ${
+      text: `Monthly Bill by Utility Type<br><sup>Min, Max, Avg, and Standard Deviation ${
         isPerPerson ? "<b>per Person</b>" : ""
       }</sup>`,
       x: 0.5,
@@ -556,7 +599,7 @@ function createTable(processedData) {
 
   const layout = {
     title:
-      "Monthly Bill per Person per Year<br><sup>Max, Min, Average, and Total</sup>",
+      "Annual Utility Bills <b>per Person</b><br><sup>Max, Min, Average, and Total</sup>",
     margin: {
       t: isMobile ? 80 : 80,
       b: isMobile ? 0 : 20,
@@ -610,7 +653,7 @@ function createYearsLineChart(data) {
       mode: "lines",
       name: year.toString(), // convert year to string for legend
       hovertemplate:
-        "%{x} %{customdata.year}<br>$%{customdata.amount:,.2f}<extra></extra>",
+        "<b>%{customdata.year}</b><br>$%{customdata.amount:,.2f}<extra></extra>",
     });
   });
 
@@ -633,6 +676,7 @@ function createYearsLineChart(data) {
       l: isMobile ? 40 : 80,
       r: isMobile ? 20 : 80,
     },
+    hovermode: "x", // show hover info for all traces
     legend: {
       orientation: "h",
       x: 0.5,
@@ -677,7 +721,16 @@ function createMonthlyAverageStackedBar(data) {
     (d) => d.Month,
     (d) => d.Expense
   );
-console.log(monthlyAverages)
+
+  // calculate totals for each month for hover
+  const monthlyTotals = Array(12).fill(0);
+  monthlyAverages.forEach(([month, expenses]) => {
+    monthlyTotals[month - 1] = expenses.reduce((sum, [_, avg]) => sum + avg, 0);
+  });
+
+  // get max total, to set y-axis range
+  const maxTotal = Math.max(...monthlyTotals);
+
   // prep data
   const expenseTypes = ["Gas", "Internet", "Cleaning", "Electric"]; // order of utilities
   const months = [
@@ -702,27 +755,42 @@ console.log(monthlyAverages)
     monthlyAverages.forEach(([month, expenses]) => {
       const expenseData = expenses.find(([e]) => e === expense);
       if (expenseData) {
-        yValues[month - 1] = expenseData[1]; // assign average value to the correct month
+        yValues[month - 1] = expenseData[1]; // adjust for 0-based month index
       }
     });
 
-    // create trace
+    // create traces for each expense
     traces.push({
       x: months,
       y: yValues,
       name: expense,
       type: "bar",
-      hovertemplate: `Month: %{x}<br>Average per Person: $%{y:.2f}<br>Expense: ${expense}<extra></extra>`,
+      hovertemplate: `<b>${expense}:</b><br>$%{y:.2f}<extra></extra>`,
+      marker: { color: colorPalette[expense] },
     });
   });
-  
+
+  // trace for total
+  traces.push({
+    x: months,
+    y: monthlyTotals,
+    name: "Total",
+    type: "bar",
+    // mode: "markers",
+    marker: { color: "black", size: 10, opacity: 0 }, // invisible marker
+    hovertemplate: `<b>Total %{x}:</b><br>$%{y:.2f}<extra></extra>`,
+    showlegend: false, // hide from legend
+    hoverlabel: { yanchor: "top", yshift: -15 },
+  });
+
   // for formatting on mobile
   const isMobile = window.innerWidth <= 768;
 
   // create layout
   const layout = {
     barmode: "stack",
-    title: "Monthly Average Bills<br><b>per Person</b> by Utility Type",
+    title:
+      "Monthly Average Bills<br><b>per Person</b><br><sup>Stacked by Utility Type</sup>",
     xaxis: {
       title: isMobile ? "" : "Month",
       tickmode: "array",
@@ -731,6 +799,7 @@ console.log(monthlyAverages)
     yaxis: {
       title: isMobile ? "" : "Average Amount ($)",
       tickprefix: "$",
+      range: [0, maxTotal * 1.1], // set y-axis range
     },
     legend: {
       orientation: "h",
@@ -739,11 +808,12 @@ console.log(monthlyAverages)
       y: -0.2,
     },
     margin: {
-        t: isMobile ? 40 : 80,
-        b: isMobile ? 30 : 80,
-        l: isMobile ? 30 : 80,
-        r: isMobile ? 10 : 80,
-      },
+      t: isMobile ? 40 : 80,
+      b: isMobile ? 30 : 80,
+      l: isMobile ? 30 : 80,
+      r: isMobile ? 10 : 80,
+    },
+    hovermode: "x", // show hover info for all traces
   };
 
   Plotly.newPlot("monthly-average-stacked-bar", traces, layout);
