@@ -435,7 +435,7 @@ function updateCategoryTable(data) {
   const layout = {
     title: {
       text: `Monthly Bill per Category<br><sup>Min, Max, Avg, and Standard Deviation ${
-        isPerPerson ? "per Person" : ""
+        isPerPerson ? "<b>per Person</b>" : ""
       }</sup>`,
       x: 0.5,
       xanchor: "center",
