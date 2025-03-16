@@ -105,6 +105,7 @@ function updateAllComponents() {
   updateSummary(filteredData);
   updateTreemap(filteredData);
   updateStackedBar(filteredData);
+  updateCategoryTable(filteredData);
   resizePlots();
 }
 
@@ -211,6 +212,7 @@ function updateChartsFromSlider(slider, dateRange) {
   updateSummary(filteredData);
   updateTreemap(filteredData);
   updateStackedBar(filteredData);
+  updateCategoryTable(filteredData);
 }
 
 // slider support function
@@ -263,7 +265,7 @@ function updateSummary(data) {
         maximumFractionDigits: 2,
       })}</b>
     </p>
-    <div style="margin: 5px 0;"><u>Monthly Bills:</u></div>
+    <div style="margin: 5px 0;"><u>Monthly Bills per Person:</u></div>
     <div style="margin: 5px 0; gap: 10px;">
         <span>Max: $${(maxMonthly / 3).toLocaleString("en-US", {
           minimumFractionDigits: 2,

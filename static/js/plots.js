@@ -299,6 +299,159 @@ function updateStackedBar(data) {
   Plotly.newPlot("stacked-bar-chart", [...traces, totalTrace], layout);
 }
 
+function updateCategoryTable(data) {
+  // check toggle
+  const isPerPerson = document.getElementById("toggle-per-person").checked;
+
+  // group data by Expense and calculate summary statistics
+  const groupedData = d3.rollups(
+    data,
+    (v) => ({
+      total: d3.sum(v, (d) => d.Amount) || 0,
+      min: d3.min(v, (d) => d.Amount) || 0,
+      max: d3.max(v, (d) => d.Amount) || 0,
+      avg: d3.mean(v, (d) => d.Amount) || 0,
+      stdDev: d3.deviation(v, (d) => d.Amount) || 0,
+    }),
+    (d) => d.Expense
+  );
+
+  // add Total row
+  groupedData.push([
+    "<b>Total</b>",
+    (() => {
+      // group data by Year and Month, calculate monthly totals
+      const monthlyTotals = d3.rollups(
+        data,
+        (v) => d3.sum(v, (d) => d.Amount),
+        (d) => `${d.Year}-${d.Month}` // group by Year-Month
+      );
+
+      // extract monthly total amounts
+      const monthlyAmounts = monthlyTotals.map(([_, total]) => total);
+
+      // calculate statistics based on monthly totals
+      return {
+        total: d3.sum(monthlyAmounts) || 0,
+        min: d3.min(monthlyAmounts) || 0,
+        max: d3.max(monthlyAmounts) || 0,
+        avg: d3.mean(monthlyAmounts) || 0,
+        stdDev: d3.deviation(monthlyAmounts) || 0,
+      };
+    })(),
+  ]);
+
+  // custom sort order
+  const sortOrder = ["Electric", "Cleaning", "Internet", "Gas", "<b>Total</b>"];
+
+  // sort
+  groupedData.sort((a, b) => {
+    const indexA = sortOrder.indexOf(a[0]);
+    const indexB = sortOrder.indexOf(b[0]);
+    return indexA - indexB;
+  });
+
+  // convert data into arrays for table
+  const expenses = groupedData.map(([expense]) => expense);
+  const totalSpend = groupedData.map(
+    ([_, stats]) =>
+      `$${(isPerPerson ? stats.total / 3 : stats.total).toLocaleString(
+        "en-US",
+        {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }
+      )}`
+  );
+  const minSpend = groupedData.map(
+    ([_, stats]) =>
+      `$${(isPerPerson ? stats.min / 3 : stats.min).toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`
+  );
+  const maxSpend = groupedData.map(
+    ([_, stats]) =>
+      `$${(isPerPerson ? stats.max / 3 : stats.max).toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`
+  );
+  const avgSpend = groupedData.map(
+    ([_, stats]) =>
+      `$${(isPerPerson ? stats.avg / 3 : stats.avg).toLocaleString("en-US", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      })}`
+  );
+  const stdDevSpend = groupedData.map(
+    ([_, stats]) =>
+      `$${(isPerPerson ? stats.stdDev / 3 : stats.stdDev).toLocaleString(
+        "en-US",
+        {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2,
+        }
+      )}`
+  );
+
+  // for formatting on mobile
+  const isMobile = window.innerWidth <= 768;
+
+  // create table
+  const tableData = [
+    {
+      type: "table",
+      header: {
+        values: [
+          "<b>Expense</b>",
+          "<b>Total Spend</b>",
+          "<b>Min Bill</b>",
+          "<b>Max Bill</b>",
+          "<b>Avg Bill</b>",
+          "<b>Standard Deviation</b>",
+        ],
+        fill: { color: "paleturquoise" },
+        align: "right",
+        font: { size: isMobile ? 13 : 14 },
+      },
+      cells: {
+        values: [
+          expenses,
+          totalSpend,
+          minSpend,
+          maxSpend,
+          avgSpend,
+          stdDevSpend,
+        ],
+        fill: { color: "lavender" },
+        align: "right",
+        font: { size: isMobile ? 11 : 12 },
+      },
+    },
+  ];
+
+  // layout
+  const layout = {
+    title: {
+      text: `Monthly Bill per Category<br><sup>Min, Max, Avg, and Standard Deviation ${
+        isPerPerson ? "per Person" : ""
+      }</sup>`,
+      x: 0.5,
+      xanchor: "center",
+    },
+    margin: {
+      t: isMobile ? 80 : 80,
+      b: isMobile ? 0 : 0,
+      l: isMobile ? 10 : 80,
+      r: isMobile ? 10 : 80,
+    },
+    height: 250,
+  };
+
+  Plotly.newPlot("category-summary-table", tableData, layout);
+}
+
 // create static summary of expenses
 function createTable(processedData) {
   // filter out data before 2021
@@ -373,6 +526,9 @@ function createTable(processedData) {
       })}`
   );
 
+  // for formatting on mobile
+  const isMobile = window.innerWidth <= 768;
+
   // create table
   const tableData = [
     {
@@ -387,20 +543,25 @@ function createTable(processedData) {
         ],
         fill: { color: "paleturquoise" },
         align: "right",
-        font: { size: 14 },
+        font: { size: isMobile ? 13 : 14 },
       },
       cells: {
         values: [years, maxAmounts, minAmounts, avgAmounts, totalAmounts],
         fill: { color: "lavender" },
         align: "right",
-        font: { size: 12 },
+        font: { size: isMobile ? 11 : 12 },
       },
     },
   ];
 
   const layout = {
     title: "Max, Min, Average, and Total<br>Monthly Bill per Person per Year",
-    margin: { t: 50, l: 25, r: 25, b: 25 },
+    margin: {
+      t: isMobile ? 80 : 80,
+      b: isMobile ? 0 : 20,
+      l: isMobile ? 10 : 80,
+      r: isMobile ? 10 : 80,
+    },
   };
 
   Plotly.newPlot("table", tableData, layout);

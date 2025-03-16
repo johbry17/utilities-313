@@ -221,7 +221,7 @@ body#index-page #title {
     margin: 20px auto;
 }
 
-#table {
+#table, #category-summary-table {
     height: auto;
-    min-height: 250px;
+    min-height: 300px;
 }
