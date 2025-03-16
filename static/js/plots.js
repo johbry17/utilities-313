@@ -766,7 +766,13 @@ function createMonthlyAverageStackedBar(data) {
       name: expense,
       type: "bar",
       hovertemplate: `<b>${expense}:</b><br>$%{y:.2f}<extra></extra>`,
-      marker: { color: colorPalette[expense] },
+      marker: {
+        color: colorPalette[expense],
+        // line: {
+        //   color: "black", // border outline
+        //   width: 1,
+        // },
+      },
     });
   });
 
