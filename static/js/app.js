@@ -85,6 +85,7 @@ d3.csv("resources/utilities_313.csv").then(function (data) {
   createTable(processedData);
   createYearsLineChart(processedData);
   createMonthlyAverageStackedBar(processedData);
+  createFirstLast24MonthsChart(processedData);
 });
 
 // updates all plots on change

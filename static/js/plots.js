@@ -824,3 +824,124 @@ function createMonthlyAverageStackedBar(data) {
 
   Plotly.newPlot("monthly-average-stacked-bar", traces, layout);
 }
+
+// create monthly comparison bar chart
+function createFirstLast24MonthsChart(data) {
+  // get most recent month and year
+  const mostRecentDate = d3.max(data, (d) => new Date(d.Year, d.Month - 1));
+  const mostRecentYear = mostRecentDate.getFullYear();
+  const mostRecentMonth = mostRecentDate.getMonth() + 1; // 1-based
+
+  // for populating title
+  const startDate = new Date(mostRecentYear, mostRecentMonth - 24); // Start of the range
+  const startMonth = startDate.toLocaleString("default", { month: "short" });
+  const startYear = startDate.getFullYear();
+  const endMonth = mostRecentDate.toLocaleString("default", { month: "short" });
+  const endYear = mostRecentYear;
+
+  // filter for last 24 months
+  const past24MonthsData = data.filter((d) => {
+    const date = new Date(d.Year, d.Month - 1);
+    return (
+      date >= new Date(mostRecentYear, mostRecentMonth - 24) &&
+      date <= mostRecentDate
+    );
+  });
+
+  // function to calculate averages
+  function calculateMonthlyTotalAverage(filteredData) {
+    // group by Year and Month, then sum the Amount
+    const monthlyTotals = d3.rollups(
+      filteredData,
+      (v) => d3.sum(v, (d) => d.Amount / 3), // divide by 3 for per person
+      (d) => `${d.Year}-${d.Month}` // group by Year-Month
+    );
+
+    // group by Month (ignoring year) and calculate average of monthly totals
+    return d3
+      .rollups(
+        monthlyTotals,
+        (v) => d3.mean(v, ([_, total]) => total),
+        ([yearMonth]) => parseInt(yearMonth.split("-")[1]) // extract month
+      )
+      .sort((a, b) => a[0] - b[0]); // sort
+  }
+
+  // calculate averages for 2021-2022 and last 24 months
+  const avg2021_2022 = calculateMonthlyTotalAverage(
+    data.filter((d) => d.Year === 2021 || d.Year === 2022)
+  );
+
+  const avgLast24Months = calculateMonthlyTotalAverage(past24MonthsData);
+
+  // prep data
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
+
+  // create traces
+  const trace2021_2022 = {
+    x: months,
+    y: avg2021_2022.map(([_, avg]) => avg),
+    name: "Avg 2021-2022",
+    type: "scatter",
+    mode: "lines+markers",
+    line: { color: "blue", width: 2 },
+    marker: { size: 6 },
+  };
+
+  const traceLast24Months = {
+    x: months,
+    y: avgLast24Months.map(([_, avg]) => avg),
+    name: `Avg Last 24 Months`,
+    type: "bar",
+    marker: { color: "orange" },
+  };
+
+  // for formatting on mobile
+  const isMobile = window.innerWidth <= 768;
+
+  // mobile responsive layout
+  const layout = {
+    title: `Average Bills Comparison <b>per Person</b><br><sup>Last 24 months* vs 2021-2022<br>*(${startMonth} ${startYear} - ${endMonth} ${endYear})</sup>`,
+    xaxis: {
+      title: isMobile ? "" : "Month",
+      tickmode: "array",
+      tickvals: months,
+    },
+    yaxis: {
+      title: isMobile ? "" : "Average Amount ($)",
+      tickprefix: "$",
+    },
+    legend: {
+      orientation: "h",
+      x: 0.5,
+      xanchor: "center",
+      y: -0.2,
+    },
+    margin: {
+      t: isMobile ? 40 : 80,
+      b: isMobile ? 30 : 80,
+      l: isMobile ? 30 : 80,
+      r: isMobile ? 10 : 80,
+    },
+    hovermode: "x", // show hover info for all traces
+  };
+
+  Plotly.newPlot(
+    "first-last-24-months-chart",
+    [traceLast24Months, trace2021_2022],
+    layout
+  );
+}
