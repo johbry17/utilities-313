@@ -1,50 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Utilities 313</title>
-    <link rel="icon" href="static/images/favicon.ico" type="image/x-icon">
-    <link rel="stylesheet" href="static/css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.css">
+    <link rel="icon" href="static/images/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="static/css/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.css"
+    />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.7.1/nouislider.min.js"></script>
     <script src="https://cdn.plot.ly/plotly-2.26.2.min.js"></script>
     <script src="https://d3js.org/d3.v6.min.js"></script>
-</head>
-<body id="index-page">
+  </head>
+  <body id="index-page">
     <!-- floating navbar -->
     <nav class="navbar navbar-expand-lg fixed-top custom-navbar">
-        <div class="container-fluid justify-content-center">
-            <label class="switch">
-                <input type="checkbox" id="toggle-per-person">
-                <span class="slider"></span>
-            </label>
-            <span class="toggle-label">Amount Per Person</span>
-        </div>
-        <div class="container-fluid justify-content-center">
-            <span id="start-date-display" class="date-display"></span>
-            <div id="date-slider" style="width: 250px; margin: 0 10px;"></div>
-            <span id="end-date-display" class="date-display"></span>
-        </div>
+      <div class="container-fluid justify-content-center">
+        <label class="switch">
+          <input type="checkbox" id="toggle-per-person" />
+          <span class="slider"></span>
+        </label>
+        <span class="toggle-label">Amount Per Person</span>
+      </div>
+      <div class="container-fluid justify-content-center">
+        <span id="start-date-display" class="date-display"></span>
+        <div id="date-slider" style="width: 250px; margin: 0 10px"></div>
+        <span id="end-date-display" class="date-display"></span>
+      </div>
     </nav>
 
     <h1 id="title">Utilities 313</h1>
 
     <div class="button">
-        <a href="utilities_313_EDA.html">Link to<br><b>Exploratory Data Analysis</b></a>
+      <a href="utilities_313_EDA.html"
+        >Link to<br /><b>Exploratory Data Analysis</b></a
+      >
     </div>
 
     <div id="line-chart-container" class="plot">
-        <div id="line-chart"></div>
-        <div id="toggle-container">
-            <label class="switch">
-                <input type="checkbox" id="toggle-category">
-                <span class="slider"></span>
-            </label>
-            <span class="toggle-label">Split Into Utility Type</span>
-        </div>
+      <div id="line-chart"></div>
+      <div id="toggle-container">
+        <label class="switch">
+          <input type="checkbox" id="toggle-category" />
+          <span class="slider"></span>
+        </label>
+        <span class="toggle-label">Split Into Utility Type</span>
+      </div>
     </div>
 
     <div id="summary-box" class="info-box"></div>
@@ -60,7 +71,63 @@
     <div id="monthly-average-stacked-bar" class="plot"></div>
     <div id="first-last-24-months-chart" class="plot"></div>
 
+    <!-- Footer -->
+    <footer class="site-footer" role="contentinfo">
+      <span class="footer-owner">
+        &copy; <span id="copyright-year">2025</span>
+        <span class="footer-author">Bryan C. Johns</span>
+      </span>
+      <span class="footer-links">
+        <a
+          href="https://johbry17.github.io/portfolio/index.html"
+          target="_blank"
+          class="portfolio-link"
+          aria-label="Portfolio"
+        >
+          <i
+            class="fas fa-laptop-code footer-icon"
+            aria-hidden="true"
+            title="Portfolio"
+          ></i
+          >Portfolio
+        </a>
+        <a
+          href="https://www.linkedin.com/in/b-johns/"
+          target="_blank"
+          class="linkedin-link"
+          aria-label="LinkedIn"
+        >
+          <i
+            class="fab fa-linkedin footer-icon"
+            aria-hidden="true"
+            title="LinkedIn"
+          ></i
+          >LinkedIn
+        </a>
+        <a
+          href="https://github.com/johbry17/utilities-313"
+          target="_blank"
+          class="github-link"
+          aria-label="GitHub"
+        >
+          <i
+            class="fab fa-github footer-icon"
+            aria-hidden="true"
+            title="GitHub"
+          ></i
+          >GitHub
+        </a>
+      </span>
+    </footer>
+    <script>
+      // Auto-update year
+      const yearElement = document.getElementById("copyright-year");
+      if (yearElement) {
+        yearElement.textContent = new Date().getFullYear();
+      }
+    </script>
+
     <script src="static/js/plots.js"></script>
     <script src="static/js/app.js"></script>
-</body>
+  </body>
 </html>
