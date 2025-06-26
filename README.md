@@ -1,41 +1,69 @@
 # Utilities-313 Dashboard
-Visualizing the bills
+📊 Visualizing the Bills
 
-- [Description](#description)
+*Utility data meets personal history—visualized with Python, JavaScript, and Plotly.*
+
+🔗 [Live Dashboard](https://johbry17.github.io/utilities-313/)  
+📈 [EDA Report](https://johbry17.github.io/utilities-313/utilities_313_EDA.html)
+
+
+## Table of Contents
+
+- [Project Overview](#project-overview)
+- [Features](#features)
+- [Tools & Technologies](#tools--technologies)
 - [Usage](#usage)
 - [Gallery](#gallery)
 - [References](#references)
 - [Acknowledgements](#acknowledgements)
 - [Author](#author)
 
-## Description
+## Project Overview
 
-The Utilities-313 Dashboard is a web-based visualization tool for analyzing utility expenses. It includes an interactive web dashboard and an exploratory data analysis (EDA) report generated from a Jupyter Notebook.
+**Utilities-313** is a personal data visualization project that combines frontend interactivity with backend automation to explore utility expenses in a household context. What began as a hobby dashboard evolved into a hybrid full-stack tool: part financial tracker, part energy awareness tool, part time capsule.
 
-- **Interactive Web Dashboard:** Provides insights into utility expenses over time, categorized by type.
+This project includes:
+- 🖥️ An interactive web dashboard with responsive visuals
+- 📊 An automated, Python-based EDA pipeline
+- 🔁 A data update workflow powered by Google Sheets and Jupyter
 
-- **Exploratory Data Analysis (EDA) Report:** A Jupyter Notebook converted to HTML with visualizations and statistics.
+The goal: turn ordinary household data into visual storytelling that’s accessible, insightful, and a bit nostalgic.
 
-- **Automated Data Processing:** Easily updates the dashboard with new data.
 
-### Features
+## Features
 
-- Stacked bar charts for monthly expenses by category.
-- Line charts for trends over time.
-- Treemaps for visualizing total spending by category.
-- Interactive hover functionality for detailed insights.
-- Mobile-friendly layout.
+- Stacked bar charts of monthly bills by category  
+- Line charts showing long-term trends  
+- Treemaps visualizing category proportions  
+- Hover interactions for detailed tooltips  
+- EDA report with summary stats and time series analysis  
+- Mobile-friendly layout
+
+## Tools & Technologies
+
+- **Frontend:** JavaScript, D3.js, Plotly.js, Bootstrap  
+- **Backend:** Python, Pandas, Jupyter Notebook  
+- **Data pipeline:** Google Sheets API, CSV  
+- **Visual Design:** HTML/CSS, responsive layout  
+- **Automation:** `nbconvert` for dynamic EDA report generation
 
 ## Usage
 
-The dashboard is available online at [GitHub Pages](https://johbry17.github.io/utilities-313/), with the EDA report acessible as a subpage [here](https://johbry17.github.io/utilities-313/utilities_313_EDA.html).
+Visit the live dashboard here:  
+🔗 [https://johbry17.github.io/utilities-313/](https://johbry17.github.io/utilities-313/)
 
-### Refreshing the Dataset
-1. Open the Jupyter Notebook `./resources/extract_data.ipynb`.
-2. Click **Run All** to process the latest data.
+Explore the full EDA report here:  
+📈 [https://johbry17.github.io/utilities-313/utilities_313_EDA.html](https://johbry17.github.io/utilities-313/utilities_313_EDA.html)
 
-### Updating the EDA HTML
-Run the following command from the terminal to generate the updated EDA report:
+
+### Updating the Dataset
+
+1. Open the Jupyter Notebook: `./resources/extract_data.ipynb`
+2. Click **Run All** to fetch and process the latest data from Google Sheets
+
+### Regenerate the EDA HTML
+
+Run the following command:
  
 ```bash
 jupyter nbconvert --to html --execute --TemplateExporter.exclude_input=True utilities_313_EDA.ipynb  
@@ -43,26 +71,40 @@ jupyter nbconvert --to html --execute --TemplateExporter.exclude_input=True util
 
 ## Gallery
 
+Dashboard Overview:
+
 ![Web Dashboard](./resources/images/dashboard.png)
+
+Monthly Utilities by Category:
 
 ![Stacked Bar Chart of Monthly Utilities By Category](./resources/images/stacked_bar.png)
 
+Electricity Trend:
+
 ![EDA CleanChoice Utilities Over Time](./resources/images/EDA_CleanChoice.png)
+
+Bills by Year:
 
 ![Monthly Bills By Year](./resources/images/years_plot.png)
 
+Tabular Summary:
+
 ![Years Table](./resources/images/year_table.png)
+
+Utility Spending Breakdown:
 
 ![Treemap of Utilities By Type](./resources/images/treemap.png)
 
 ## References
 
-Data supplied by Utilities 313.
+Data sourced from a personal record of household utility expenses.
 
 ## Acknowledgements
 
-Thanks to the entire utility team over the years.
+Special thanks to the utility providers who kept the lights on, the water running, and the house clean—and to all the roommates over the years who shared the bills and the memories.
 
 ## Author
 
-Bryan Johns, March 2025
+Bryan Johns, March 2025  
+[bryan.johns.official@gmail.com](mailto:bryan.johns.official@gmail.com) | [LinkedIn](https://www.linkedin.com/in/b-johns/) | [GitHub](https://github.com/johbry17) | [Portfolio](https://johbry17.github.io/portfolio/index.html)
+
