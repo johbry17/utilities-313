@@ -4,7 +4,9 @@
 *Utility data meets personal history—visualized with Python, JavaScript, and Plotly.*
 
 🔗 [Live Dashboard](https://johbry17.github.io/utilities-313/)  
-📈 [EDA Report](https://johbry17.github.io/utilities-313/utilities_313_EDA.html)
+🔗 [EDA Report](https://johbry17.github.io/utilities-313/utilities_313_EDA.html)
+
+> ℹ️ Status: While not under active development, data and dashboards are refreshed regularly as new information becomes available.
 
 
 ## Table of Contents
@@ -23,9 +25,9 @@
 **Utilities-313** is a personal data visualization project that combines frontend interactivity with backend automation to explore utility expenses in a household context. What began as a hobby dashboard evolved into a hybrid full-stack tool: part financial tracker, part energy awareness tool, part time capsule.
 
 This project includes:
-- 🖥️ An interactive web dashboard with responsive visuals
-- 📊 An automated, Python-based EDA pipeline
-- 🔁 A data update workflow powered by Google Sheets and Jupyter
+- An interactive web dashboard with responsive visuals
+- An automated, Python-based EDA pipeline
+- A data update workflow powered by Google Sheets and Jupyter
 
 The goal: turn ordinary household data into visual storytelling that’s accessible, insightful, and a bit nostalgic.
 
@@ -53,7 +55,7 @@ Visit the live dashboard here:
 🔗 [https://johbry17.github.io/utilities-313/](https://johbry17.github.io/utilities-313/)
 
 Explore the full EDA report here:  
-📈 [https://johbry17.github.io/utilities-313/utilities_313_EDA.html](https://johbry17.github.io/utilities-313/utilities_313_EDA.html)
+🔗 [https://johbry17.github.io/utilities-313/utilities_313_EDA.html](https://johbry17.github.io/utilities-313/utilities_313_EDA.html)
 
 
 ### Updating the Dataset
