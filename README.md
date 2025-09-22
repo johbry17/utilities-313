@@ -58,11 +58,15 @@ Explore the full EDA report here:
 🔗 [https://johbry17.github.io/utilities-313/utilities_313_EDA.html](https://johbry17.github.io/utilities-313/utilities_313_EDA.html)
 
 
-### Updating the Dataset
+#### Updating the Dataset
 
-1. Open the Jupyter Notebook: `./resources/extract_data.ipynb`
-2. Click **Run All** to fetch and process the latest data from Google Sheets
-3. Regenerate the EDA HTML and add metadata (title, description, author, favicon - see the top of `utilities_313_EDA.ipynb` for details).
+1. Open the Jupyter Notebook: `./resources/extract_data.ipynb`  
+2. Click **Run All** to fetch and process the latest data from Google Sheets  
+3. Regenerate the EDA HTML from the terminal:  
+```jupyter nbconvert --to html --execute --no-input utilities_313_EDA.ipynb```
+4. Update HTML metadata (favicon, title, etc.):  
+```python inject_metadata_to_EDA.py```
+
 
 ## Gallery
 
