@@ -1,5 +1,5 @@
 # Utilities-313 Dashboard
-📊 Visualizing the Bills
+![GitHub last commit](https://img.shields.io/github/last-commit/johbry17/utilities-313)
 
 *Utility data meets personal history—visualized with Python, JavaScript, and Plotly.*
 
@@ -62,14 +62,7 @@ Explore the full EDA report here:
 
 1. Open the Jupyter Notebook: `./resources/extract_data.ipynb`
 2. Click **Run All** to fetch and process the latest data from Google Sheets
-
-### Regenerate the EDA HTML
-
-Run the following command:
- 
-```bash
-jupyter nbconvert --to html --execute --TemplateExporter.exclude_input=True utilities_313_EDA.ipynb  
-```
+3. Regenerate the EDA HTML and add metadata (title, description, author, favicon - see the top of `utilities_313_EDA.ipynb` for details).
 
 ## Gallery
 

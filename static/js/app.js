@@ -32,13 +32,15 @@ function processData(data) {
       d.Amount += 143.5; // add 143.5 to May 2023, Pepco
     }
 
-    // adjust the Cleaning expenses for July 2024 and June 2024
-    if (d.Year === 2024 && d.Month === 7 && d.Expense === "Cleaning") {
-      d.Amount -= 80; // subtract 80 from July 2024, Cleaning
-    }
-    if (d.Year === 2024 && d.Month === 6 && d.Expense === "Cleaning") {
-      d.Amount += 80; // add 80 to June 2024, Cleaning
-    }
+    // adjust the Cleaning expenses for July and June 2024/2025
+    [2024, 2025].forEach((year) => {
+      if (d.Year === year && d.Month === 7 && d.Expense === "Cleaning") {
+        d.Amount -= 80; // subtract 80 from July, Cleaning
+      }
+      if (d.Year === year && d.Month === 6 && d.Expense === "Cleaning") {
+        d.Amount += 80; // add 80 to June, Cleaning
+      }
+    });
 
     // reassign CleanChoice and Pepco to Electric
     if (d.Expense === "Pepco" || d.Expense === "CleanChoice")
