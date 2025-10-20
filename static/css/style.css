@@ -248,6 +248,19 @@ body#index-page #title {
   align-items: center;
   gap: 1.5em;
 }
+.site-footer .footer-tagline {
+  width: 100%;
+  text-align: center;
+  font-size: 1.05em;
+  color: #444;
+  margin-bottom: 0.4em;
+  margin-top: 0.2em;
+  font-style: italic;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  line-height: 1.4;
+}
 .site-footer .footer-owner {
   color: #888;
   font-weight: normal;
@@ -296,6 +309,11 @@ body#index-page #title {
     gap: 0.8em;
     font-size: 0.97em;
     padding: 1.5em 0.5em;
+  }
+  .site-footer .footer-tagline {
+    font-size: 0.98em;
+    margin-bottom: 0.4em;
+    color: #555;
   }
   .site-footer .footer-links {
     flex-direction: column;
