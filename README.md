@@ -106,5 +106,5 @@ Special thanks to the utility providers who kept the lights on, the water runnin
 
 Bryan Johns, March 2025  
 [bryan.johns@informedwanderer.com](mailto:bryan.johns@informedwanderer.com) | [LinkedIn](https://www.linkedin.com/in/b-johns/) | [GitHub](https://github.com/johbry17) | [Portfolio](https://informedwanderer.com)  
-— Data fluent, human literate.
+— Fluent in Data. Fluent in Human.
 
