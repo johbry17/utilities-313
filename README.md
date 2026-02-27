@@ -62,10 +62,8 @@ Explore the full EDA report here:
 
 1. Open the Jupyter Notebook: `./resources/extract_data.ipynb`  
 2. Click **Run All** to fetch and process the latest data from Google Sheets  
-3. Regenerate the EDA HTML from the terminal:  
-```jupyter nbconvert --to html --execute --no-input utilities_313_EDA.ipynb```
-4. Update HTML metadata (favicon, title, etc.):  
-```python inject_metadata_to_EDA.py```
+3. Regenerate the EDA HTML and add meta data (favicon, title, etc.) from the terminal:  
+```python update_eda.py```
 
 
 ## Gallery
