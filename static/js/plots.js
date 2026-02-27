@@ -14,20 +14,42 @@ const colorPalette = {
 //   Gas: "red",
 // };
 
+// config for all plots, removing unnecessary buttons
+// reduces user confusion, especially on mobile
+const config = {
+  displayModeBar: "hover",
+  hovermode: "closest",
+  modeBarButtonsToRemove: [
+    "zoom2d",
+    "pan2d",
+    "select2d",
+    "lasso2d",
+    "zoomIn2d",
+    "zoomOut2d",
+    "autoScale2d",
+    "toggleSpikelines",
+    "hoverClosestCartesian",
+    "hoverCompareCartesian",
+    "hoverClosestPie",
+    "toggleHover",
+    "toImage",
+  ],
+};
+
 // timeseries chart of expenses per month
 function updateLineChart(data) {
   // group data by Year and Month, then by Expense
   const groupedData = d3.group(
     data,
     (d) => new Date(d.Year, d.Month - 1), // adjust month for 0-based index
-    (d) => d.Expense
+    (d) => d.Expense,
   );
   const dates = Array.from(groupedData.keys());
   const categories = ["Gas", "Internet", "Cleaning", "Electric"];
 
   // format dates as "MMM YYYY" for x-axis and hover
   const formattedDates = dates.map((date) =>
-    date.toLocaleString("default", { month: "short", year: "numeric" })
+    date.toLocaleString("default", { month: "short", year: "numeric" }),
   );
 
   // check toggles
@@ -114,8 +136,8 @@ function updateLineChart(data) {
       ? "Monthly Utilities<br><b>per Person</b> by Type"
       : "Monthly Utilities<br>by Type"
     : isPerPerson
-    ? "Monthly Utilities<br><b>per Person</b>"
-    : "Monthly Utilities";
+      ? "Monthly Utilities<br><b>per Person</b>"
+      : "Monthly Utilities";
 
   // dynamic tick values and labels for layout
   // one tick per year by default
@@ -132,7 +154,7 @@ function updateLineChart(data) {
   const yMax = Math.max(
     ...traces
       .filter((trace) => trace.name !== "Total")
-      .flatMap((trace) => trace.y.filter((y) => y !== null))
+      .flatMap((trace) => trace.y.filter((y) => y !== null)),
   );
 
   // for formatting on mobile
@@ -166,7 +188,7 @@ function updateLineChart(data) {
     hovermode: "x", // show hover info for all traces
   };
 
-  Plotly.newPlot("line-chart", traces, layout);
+  Plotly.newPlot("line-chart", traces, layout, config);
 }
 
 // treemap chart of Expenses totaled
@@ -174,7 +196,7 @@ function updateTreemap(data) {
   const groupedData = d3.rollup(
     data,
     (v) => d3.sum(v, (d) => d.Amount),
-    (d) => d.Expense
+    (d) => d.Expense,
   );
   const labels = Array.from(groupedData.keys());
   const values = Array.from(groupedData.values());
@@ -228,7 +250,7 @@ function updateTreemap(data) {
     },
   };
 
-  Plotly.newPlot("treemap-chart", [trace], layout);
+  Plotly.newPlot("treemap-chart", [trace], layout, config);
 }
 
 // stacked bar chart of expenses per month
@@ -237,13 +259,13 @@ function updateStackedBar(data) {
   const groupedData = d3.group(
     data,
     (d) => new Date(d.Year, d.Month - 1), // adjust month for 0-based index
-    (d) => d.Expense
+    (d) => d.Expense,
   );
   const dates = Array.from(groupedData.keys());
 
   // format dates as "MMM YYYY" for x-axis and hover
   const formattedDates = dates.map((date) =>
-    date.toLocaleString("default", { month: "short", year: "numeric" })
+    date.toLocaleString("default", { month: "short", year: "numeric" }),
   );
 
   const categories = ["Gas", "Internet", "Cleaning", "Electric"];
@@ -339,7 +361,7 @@ function updateStackedBar(data) {
   };
 
   // plot chart
-  Plotly.newPlot("stacked-bar-chart", [...traces, totalTrace], layout);
+  Plotly.newPlot("stacked-bar-chart", [...traces, totalTrace], layout, config);
 }
 
 function updateCategoryTable(data) {
@@ -356,7 +378,7 @@ function updateCategoryTable(data) {
       avg: d3.mean(v, (d) => d.Amount) || 0,
       stdDev: d3.deviation(v, (d) => d.Amount) || 0,
     }),
-    (d) => d.Expense
+    (d) => d.Expense,
   );
 
   // add Total row
@@ -367,7 +389,7 @@ function updateCategoryTable(data) {
       const monthlyTotals = d3.rollups(
         data,
         (v) => d3.sum(v, (d) => d.Amount),
-        (d) => `${d.Year}-${d.Month}` // group by Year-Month
+        (d) => `${d.Year}-${d.Month}`, // group by Year-Month
       );
 
       // extract monthly total amounts
@@ -403,29 +425,29 @@ function updateCategoryTable(data) {
         {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
-        }
-      )}`
+        },
+      )}`,
   );
   const minSpend = groupedData.map(
     ([_, stats]) =>
       `$${(isPerPerson ? stats.min / 3 : stats.min).toLocaleString("en-US", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
-      })}`
+      })}`,
   );
   const maxSpend = groupedData.map(
     ([_, stats]) =>
       `$${(isPerPerson ? stats.max / 3 : stats.max).toLocaleString("en-US", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
-      })}`
+      })}`,
   );
   const avgSpend = groupedData.map(
     ([_, stats]) =>
       `$${(isPerPerson ? stats.avg / 3 : stats.avg).toLocaleString("en-US", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
-      })}`
+      })}`,
   );
   const stdDevSpend = groupedData.map(
     ([_, stats]) =>
@@ -434,8 +456,8 @@ function updateCategoryTable(data) {
         {
           minimumFractionDigits: 2,
           maximumFractionDigits: 2,
-        }
-      )}`
+        },
+      )}`,
   );
 
   // for formatting on mobile
@@ -492,7 +514,7 @@ function updateCategoryTable(data) {
     height: 250,
   };
 
-  Plotly.newPlot("category-summary-table", tableData, layout);
+  Plotly.newPlot("category-summary-table", tableData, layout, config);
 }
 
 // create static summary of expenses
@@ -505,7 +527,7 @@ function createTable(processedData) {
     filteredData,
     (v) => d3.sum(v, (d) => d.Amount),
     (d) => d.Year,
-    (d) => d.Month
+    (d) => d.Month,
   );
 
   // flatten grouped data
@@ -532,7 +554,7 @@ function createTable(processedData) {
       avg: d3.mean(v, (d) => d.AmountPerPerson),
       total: d3.sum(v, (d) => d.AmountPerPerson),
     }),
-    (d) => d.Year
+    (d) => d.Year,
   );
 
   // sort by year
@@ -545,28 +567,28 @@ function createTable(processedData) {
       `$${d[1].max.toLocaleString("en-US", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
-      })}`
+      })}`,
   );
   const minAmounts = yearlyStats.map(
     (d) =>
       `$${d[1].min.toLocaleString("en-US", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
-      })}`
+      })}`,
   );
   const avgAmounts = yearlyStats.map(
     (d) =>
       `$${d[1].avg.toLocaleString("en-US", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
-      })}`
+      })}`,
   );
   const totalAmounts = yearlyStats.map(
     (d) =>
       `$${d[1].total.toLocaleString("en-US", {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
-      })}`
+      })}`,
   );
 
   // for formatting on mobile
@@ -608,7 +630,7 @@ function createTable(processedData) {
     },
   };
 
-  Plotly.newPlot("table", tableData, layout);
+  Plotly.newPlot("table", tableData, layout, config);
 }
 
 function createYearsLineChart(data) {
@@ -636,7 +658,7 @@ function createYearsLineChart(data) {
     filteredData,
     (v) => d3.sum(v, (d) => d.Amount),
     (d) => d.Year,
-    (d) => d.Month
+    (d) => d.Month,
   );
 
   // create traces
@@ -685,7 +707,7 @@ function createYearsLineChart(data) {
     },
   };
 
-  Plotly.newPlot("years-line", traces, layout);
+  Plotly.newPlot("years-line", traces, layout, config);
 }
 
 // create monthly average stacked bar chart
@@ -696,7 +718,7 @@ function createMonthlyAverageStackedBar(data) {
     (v) => d3.sum(v, (d) => d.Amount),
     (d) => d.Year,
     (d) => d.Month,
-    (d) => d.Expense
+    (d) => d.Expense,
   );
 
   // flatten grouped data
@@ -719,7 +741,7 @@ function createMonthlyAverageStackedBar(data) {
     flattenedData,
     (v) => d3.mean(v, (d) => d.Amount), // calculate average for each month
     (d) => d.Month,
-    (d) => d.Expense
+    (d) => d.Expense,
   );
 
   // calculate totals for each month for hover
@@ -822,7 +844,7 @@ function createMonthlyAverageStackedBar(data) {
     hovermode: "x", // show hover info for all traces
   };
 
-  Plotly.newPlot("monthly-average-stacked-bar", traces, layout);
+  Plotly.newPlot("monthly-average-stacked-bar", traces, layout, config);
 }
 
 // create monthly comparison bar chart
@@ -854,7 +876,7 @@ function createFirstLast24MonthsChart(data) {
     const monthlyTotals = d3.rollups(
       filteredData,
       (v) => d3.sum(v, (d) => d.Amount / 3), // divide by 3 for per person
-      (d) => `${d.Year}-${d.Month}` // group by Year-Month
+      (d) => `${d.Year}-${d.Month}`, // group by Year-Month
     );
 
     // group by Month (ignoring year) and calculate average of monthly totals
@@ -862,14 +884,14 @@ function createFirstLast24MonthsChart(data) {
       .rollups(
         monthlyTotals,
         (v) => d3.mean(v, ([_, total]) => total),
-        ([yearMonth]) => parseInt(yearMonth.split("-")[1]) // extract month
+        ([yearMonth]) => parseInt(yearMonth.split("-")[1]), // extract month
       )
       .sort((a, b) => a[0] - b[0]); // sort
   }
 
   // calculate averages for 2021-2022 and last 24 months
   const avg2021_2022 = calculateMonthlyTotalAverage(
-    data.filter((d) => d.Year === 2021 || d.Year === 2022)
+    data.filter((d) => d.Year === 2021 || d.Year === 2022),
   );
 
   const avgLast24Months = calculateMonthlyTotalAverage(past24MonthsData);
@@ -942,6 +964,7 @@ function createFirstLast24MonthsChart(data) {
   Plotly.newPlot(
     "first-last-24-months-chart",
     [traceLast24Months, trace2021_2022],
-    layout
+    layout,
+    config,
   );
 }
