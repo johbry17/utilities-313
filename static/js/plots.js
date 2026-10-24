@@ -423,30 +423,30 @@ function updateCategoryTable(data) {
       `$${(isPerPerson ? stats.total / 3 : stats.total).toLocaleString(
         "en-US",
         {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
         },
       )}`,
   );
   const minSpend = groupedData.map(
     ([_, stats]) =>
       `$${(isPerPerson ? stats.min / 3 : stats.min).toLocaleString("en-US", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
       })}`,
   );
   const maxSpend = groupedData.map(
     ([_, stats]) =>
       `$${(isPerPerson ? stats.max / 3 : stats.max).toLocaleString("en-US", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
       })}`,
   );
   const avgSpend = groupedData.map(
     ([_, stats]) =>
       `$${(isPerPerson ? stats.avg / 3 : stats.avg).toLocaleString("en-US", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
       })}`,
   );
   const stdDevSpend = groupedData.map(
@@ -454,8 +454,8 @@ function updateCategoryTable(data) {
       `$${(isPerPerson ? stats.stdDev / 3 : stats.stdDev).toLocaleString(
         "en-US",
         {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
         },
       )}`,
   );
@@ -565,29 +565,29 @@ function createTable(processedData) {
   const maxAmounts = yearlyStats.map(
     (d) =>
       `$${d[1].max.toLocaleString("en-US", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
       })}`,
   );
   const minAmounts = yearlyStats.map(
     (d) =>
       `$${d[1].min.toLocaleString("en-US", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
       })}`,
   );
   const avgAmounts = yearlyStats.map(
     (d) =>
       `$${d[1].avg.toLocaleString("en-US", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
       })}`,
   );
   const totalAmounts = yearlyStats.map(
     (d) =>
       `$${d[1].total.toLocaleString("en-US", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0,
       })}`,
   );
 
