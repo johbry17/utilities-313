@@ -47,7 +47,7 @@ The goal: turn ordinary household data into visual storytelling that’s accessi
 - **Backend:** Python, Pandas, Jupyter Notebook  
 - **Data pipeline:** Google Sheets API, CSV  
 - **Visual Design:** HTML/CSS, responsive layout  
-- **Automation:** `nbconvert` for dynamic EDA report generation
+- **Automation:** `build_utilities_313.py` — single-command build pipeline (Google Sheets → CSV → EDA HTML)
 
 ## Usage
 
@@ -60,10 +60,20 @@ Explore the full EDA report here:
 
 #### Updating the Dataset
 
-1. Open the Jupyter Notebook: `./resources/extract_data.ipynb`  
-2. Click **Run All** to fetch and process the latest data from Google Sheets  
-3. Regenerate the EDA HTML and add meta data (favicon, title, etc.) from the terminal:  
-```python update_eda.py```
+Run the build script from the repository root:
+
+```
+python build_utilities_313.py
+```
+
+This single command:
+1. Fetches the latest data from Google Sheets and writes `resources/utilities_313.csv`
+2. Executes `utilities_313_EDA.ipynb` and exports it to `utilities_313_EDA.html`
+3. Injects title, description, author, and favicon metadata into the HTML
+
+**Prerequisites:** `resources/utilities.json` (Google service-account credentials) and `resources/name_scrubber.py` (pseudonym map) must be present locally — neither is committed to the repository.
+
+**Environment:** Run with the `dev` conda environment (or any environment with `gspread`, `oauth2client`, `pandas`, `beautifulsoup4`, and Jupyter installed).
 
 
 ## Gallery
