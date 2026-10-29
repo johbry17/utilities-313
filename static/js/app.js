@@ -139,12 +139,11 @@ function parseDateFromSlider(dateText) {
 
 window.addEventListener("resize", resizePlots);
 
-// function to resize all Plotly plots
+// Resize all Plotly plots, including the line chart which lives in its own container
 function resizePlots() {
-  const plots = document.querySelectorAll(".plot");
-  plots.forEach((plot) => {
-    Plotly.Plots.resize(plot);
-  });
+  document.querySelectorAll(".plot").forEach((el) => Plotly.Plots.resize(el));
+  const lineChart = document.getElementById("line-chart");
+  if (lineChart && lineChart._fullData) Plotly.Plots.resize(lineChart);
 }
 
 // initialize dual-ended slider
@@ -228,70 +227,61 @@ function formatDate(date) {
   )}`;
 }
 
-// summary stats box
+// Summary KPI cards
 function updateSummary(data) {
-  // calculate total spent and total per person
-  const totalSpent = d3.sum(data, (d) => d.Amount);
+  const totalSpent     = d3.sum(data, (d) => d.Amount);
   const totalPerPerson = totalSpent / 3;
 
-  // get min and max dates
-  const minDate = new Date(
-    d3.min(data, (d) => new Date(d.Year, d.Month - 1))
-  ).toLocaleString("default", { month: "long", year: "numeric" });
-  const maxDate = new Date(
-    d3.max(data, (d) => new Date(d.Year, d.Month - 1))
-  ).toLocaleString("default", { month: "long", year: "numeric" });
+  const minDate = new Date(d3.min(data, (d) => new Date(d.Year, d.Month - 1)))
+    .toLocaleString("default", { month: "short", year: "numeric" });
+  const maxDate = new Date(d3.max(data, (d) => new Date(d.Year, d.Month - 1)))
+    .toLocaleString("default", { month: "short", year: "numeric" });
 
-  // compute monthly stats
   const groupedByMonth = d3.rollups(
     data,
     (v) => d3.sum(v, (d) => d.Amount),
-    (d) => `${d.Year}-${d.Month}`
+    (d) => `${d.Year}-${d.Month}`,
   );
-  const monthlyTotals = groupedByMonth.map(([_, total]) => total);
-  const maxMonthly = d3.max(monthlyTotals);
-  const minMonthly = d3.min(monthlyTotals);
-  const avgMonthly = d3.mean(monthlyTotals);
+  const monthlyTotals = groupedByMonth.map(([, t]) => t);
+  const maxMonthly    = d3.max(monthlyTotals);
+  const minMonthly    = d3.min(monthlyTotals);
+  const avgMonthly    = d3.mean(monthlyTotals);
   const stdDevMonthly = d3.deviation(monthlyTotals);
 
-  // update summary box
+  const cur = (n, decimals = 0) =>
+    `$${n.toLocaleString("en-US", {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals,
+    })}`;
+
   document.getElementById("summary-box").innerHTML = `
-    <div style="margin: 5px 0;">${minDate} - ${maxDate}</div>
-    <p>Total Spent:<br>
-      <b>$${totalSpent.toLocaleString("en-US", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      })}</b>
-    </p>
-    <p>Total Amount per Person:<br>
-      <b>$${totalPerPerson.toLocaleString("en-US", {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      })}</b>
-    </p>
-    <div style="margin: 5px 0;"><u>Monthly Bills per Person:</u></div>
-    <div style="margin: 5px 0; gap: 10px;">
-        <span>Max: $${(maxMonthly / 3).toLocaleString("en-US", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        })}</span>
-        <i class="fas fa-arrows-alt-h"></i>
-        <span>Min: $${(minMonthly / 3).toLocaleString("en-US", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        })}</span>
-    </div>
-    <div style="margin: 5px 0;">Average:
-        $${(avgMonthly / 3).toLocaleString("en-US", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        })}
-    </div>
-    <div style="margin: 5px 0;">Standard Deviation:
-        $${(stdDevMonthly / 3).toLocaleString("en-US", {
-          minimumFractionDigits: 2,
-          maximumFractionDigits: 2,
-        })}
+    <span class="kpi-period">${minDate} &ndash; ${maxDate}</span>
+    <div class="kpi-grid">
+      <div class="kpi-card kpi-primary">
+        <div class="kpi-label">Total Spent</div>
+        <div class="kpi-value">${cur(totalSpent)}</div>
+      </div>
+      <div class="kpi-card kpi-primary">
+        <div class="kpi-label">Per Person</div>
+        <div class="kpi-value">${cur(totalPerPerson)}</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Monthly Avg</div>
+        <div class="kpi-value secondary">${cur(avgMonthly / 3, 2)}</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Monthly High</div>
+        <div class="kpi-value secondary">${cur(maxMonthly / 3, 2)}</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Monthly Low</div>
+        <div class="kpi-value secondary">${cur(minMonthly / 3, 2)}</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">Std Dev</div>
+        <div class="kpi-value secondary">${cur(stdDevMonthly / 3, 2)}</div>
+      </div>
     </div>
   `;
 }
+

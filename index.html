@@ -28,53 +28,69 @@
     <script src="https://d3js.org/d3.v6.min.js"></script>
   </head>
   <body id="index-page">
-    <!-- floating navbar -->
+
+    <!-- Fixed controls navbar -->
     <nav class="navbar navbar-expand-lg fixed-top custom-navbar">
-      <div class="container-fluid justify-content-center">
-        <label class="switch">
-          <input type="checkbox" id="toggle-per-person" />
-          <span class="slider"></span>
-        </label>
-        <span class="toggle-label">Amount Per Person</span>
-      </div>
-      <div class="container-fluid justify-content-center">
-        <span id="start-date-display" class="date-display"></span>
-        <div id="date-slider" style="width: 250px; margin: 0 10px"></div>
-        <span id="end-date-display" class="date-display"></span>
+      <div class="nav-inner">
+        <div class="nav-controls-group">
+          <label class="switch">
+            <input type="checkbox" id="toggle-per-person" />
+            <span class="slider"></span>
+          </label>
+          <span class="toggle-label">Per Person</span>
+        </div>
+        <div class="nav-date-range">
+          <span id="start-date-display" class="date-display"></span>
+          <div id="date-slider"></div>
+          <span id="end-date-display" class="date-display"></span>
+        </div>
       </div>
     </nav>
 
-    <h1 id="title">Utilities 313</h1>
-
-    <div class="button">
-      <a href="utilities_313_EDA.html"
-        >Link to<br /><b>Exploratory Data Analysis</b></a
-      >
-    </div>
-
-    <div id="line-chart-container" class="plot">
-      <div id="line-chart"></div>
-      <div id="toggle-container">
-        <label class="switch">
-          <input type="checkbox" id="toggle-category" />
-          <span class="slider"></span>
-        </label>
-        <span class="toggle-label">Split Into Utility Type</span>
+    <!-- Page header -->
+    <header class="page-header">
+      <div class="header-content">
+        <div class="header-title-group">
+          <h1 class="page-title">Utilities 313</h1>
+          <p class="page-subtitle">Shared living space &middot; utility expense tracking</p>
+        </div>
+        <a href="utilities_313_EDA.html" class="eda-link">
+          Exploratory Data Analysis &rarr;
+        </a>
       </div>
-    </div>
+    </header>
 
-    <div id="summary-box" class="info-box"></div>
+    <!-- Main dashboard -->
+    <main class="dashboard-content">
 
-    <div id="treemap-chart" class="plot"></div>
-    <div id="stacked-bar-chart" class="plot"></div>
-    <div id="category-summary-table" class="plot"></div>
+      <!-- KPI summary (populated by JS) -->
+      <section id="summary-box"></section>
 
-    <div class="info-box"><u>Trends and Statistics</u></div>
+      <!-- Interactive charts -->
+      <div id="line-chart-container">
+        <div id="line-chart"></div>
+        <div id="toggle-container">
+          <label class="switch">
+            <input type="checkbox" id="toggle-category" />
+            <span class="slider"></span>
+          </label>
+          <span class="toggle-label">Split by Utility Type</span>
+        </div>
+      </div>
 
-    <div id="table" class="plot"></div>
-    <div id="years-line" class="plot"></div>
-    <div id="monthly-average-stacked-bar" class="plot"></div>
-    <div id="first-last-24-months-chart" class="plot"></div>
+      <div id="treemap-chart" class="plot"></div>
+      <div id="stacked-bar-chart" class="plot"></div>
+      <div id="category-summary-table" class="plot"></div>
+
+      <!-- Trends & Statistics section -->
+      <div class="chart-section-heading">Trends &amp; Statistics</div>
+
+      <div id="table" class="plot"></div>
+      <div id="years-line" class="plot"></div>
+      <div id="monthly-average-stacked-bar" class="plot"></div>
+      <div id="first-last-24-months-chart" class="plot"></div>
+
+    </main>
 
     <!-- Footer -->
     <footer class="site-footer" role="contentinfo">
@@ -90,12 +106,7 @@
           class="portfolio-link"
           aria-label="Portfolio"
         >
-          <i
-            class="fas fa-laptop-code footer-icon"
-            aria-hidden="true"
-            title="Portfolio"
-          ></i
-          >Portfolio
+          <i class="fas fa-laptop-code footer-icon" aria-hidden="true" title="Portfolio"></i>Portfolio
         </a>
         <a
           href="https://www.linkedin.com/in/b-johns/"
@@ -103,12 +114,7 @@
           class="linkedin-link"
           aria-label="LinkedIn"
         >
-          <i
-            class="fab fa-linkedin footer-icon"
-            aria-hidden="true"
-            title="LinkedIn"
-          ></i
-          >LinkedIn
+          <i class="fab fa-linkedin footer-icon" aria-hidden="true" title="LinkedIn"></i>LinkedIn
         </a>
         <a
           href="https://github.com/johbry17/utilities-313"
@@ -116,21 +122,14 @@
           class="github-link"
           aria-label="GitHub"
         >
-          <i
-            class="fab fa-github footer-icon"
-            aria-hidden="true"
-            title="GitHub"
-          ></i
-          >GitHub
+          <i class="fab fa-github footer-icon" aria-hidden="true" title="GitHub"></i>GitHub
         </a>
       </span>
     </footer>
+
     <script>
-      // Auto-update year
       const yearElement = document.getElementById("copyright-year");
-      if (yearElement) {
-        yearElement.textContent = new Date().getFullYear();
-      }
+      if (yearElement) yearElement.textContent = new Date().getFullYear();
     </script>
 
     <script src="static/js/plots.js"></script>
